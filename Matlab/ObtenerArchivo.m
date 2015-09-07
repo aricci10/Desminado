@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 05-Sep-2015 16:13:21
+% Last Modified by GUIDE v2.5 06-Sep-2015 20:08:43
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -92,7 +92,7 @@ function Info_Callback(hObject, eventdata, handles)
 % hObject    handle to Info (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+msgbox('Este programa permite cargar un archivo .g para ser enviado, enviar comandos manualmente o seleccionar una de las trayectorias predeterminadas.','Información'); %Info de las trayectorias.
 
 % --- Executes on selection change in Predet.
 function Predet_Callback(hObject, eventdata, handles)
@@ -107,6 +107,10 @@ fun = get(hObject,'Value');
         case 1
             a = imread('A.png');
             imshow(a);
+            x=inputdlg({'Parámetro A','Parámetro B'},'Parámetros');
+            %x será una celda de dos elementos.
+            params=cell2mat(x);
+            %params es un arreglo con estos valores.
         case 2
             b = imread('B.jpg');
             imshow(b);
@@ -161,14 +165,29 @@ function Enviar_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 input = handles.Comandos; %Importar arreglo de Char.
-fileID = fopen('Comandos.bin','w'); %Crear archivo binario.
-fwrite(fileID,input); %Escribir en archivo binario.
-fclose(fileID); %Cerrar la edición.
-lectura=fopen('Comandos.bin'); %Abrir de nuevo para lectura.
-resultado=num2str(transpose(fread(lectura))); %Volverlo entendible.
-set(handles.Resultado, 'String', resultado); %Mostrar lo enviado
-fclose(lectura);%Acabar lectura.
-s=serial('com1'); %Declarar puerto COM1
+s=serial('/dev/ttyACM0'); %Declarar puerto COM1
 fopen(s); %Abrir puerto COM1
-fwrite(s,imput); %Enviar código ya en binario a COM1.
+fprintf(s,input); %Enviar código ya en binario a COM1.
 fclose(s); %Cerrar el serial.
+
+
+% --- Executes on button press in Info1.
+function Info1_Callback(hObject, eventdata, handles)
+% hObject    handle to Info1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+msgbox('Esta trayectoria realiza un barrido dado por la geometría mostrada en la figura. Para construirlo, el usuario debe dar los parámetros requeridos.','Trayectoria 1');
+%Info de la trayectoria 1.
+
+% --- Executes on button press in Info2.
+function Info2_Callback(hObject, eventdata, handles)
+% hObject    handle to Info2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in Info3.
+function Info3_Callback(hObject, eventdata, handles)
+% hObject    handle to Info3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
