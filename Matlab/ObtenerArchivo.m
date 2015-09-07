@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 06-Sep-2015 20:08:43
+% Last Modified by GUIDE v2.5 06-Sep-2015 22:30:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,7 +72,6 @@ function varargout = ObtenerArchivo_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
-
 
 % --- Executes on button press in Cargar.
 function Cargar_Callback(hObject, eventdata, handles)
@@ -164,8 +163,10 @@ function Enviar_Callback(hObject, eventdata, handles)
 % hObject    handle to Enviar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global s;
 input = handles.Comandos; %Importar arreglo de Char.
-s=serial('/dev/ttyACM0'); %Declarar puerto COM1
+puerto=handles.Port;
+s=serial(puerto); %Declarar puerto COM1
 fopen(s); %Abrir puerto COM1
 fprintf(s,input); %Enviar código ya en binario a COM1.
 resulta=fscanf(s);
@@ -193,3 +194,167 @@ function Info3_Callback(hObject, eventdata, handles)
 % hObject    handle to Info3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in checkbox1.
+function checkbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hint: get(hObject,'Value') returns toggle state of checkbox1
+global chuleadoX;
+if(get(hObject,'Value')== get(hObject,'Max'))
+    chuleadoX=1;
+else
+    chuleadoX=0;
+end
+% --- Executes on button press in checkbox2.
+function checkbox2_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hint: get(hObject,'Value') returns toggle state of checkbox2
+global chuleadoY;
+if(get(hObject,'Value')==get(hObject,'Max'))
+    chuleadoY = 1;
+else
+    chuleadoY=0;
+end
+
+% --- Executes on button press in checkbox3.
+function checkbox3_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox3
+global chuleadoZ;
+if(get(hObject,'Value')==get(hObject,'Max'))
+    chuleadoZ=1;
+else
+    chuleadoZ=0;
+end
+    
+
+
+function Diameter_Callback(hObject, eventdata, handles)
+% hObject    handle to Diameter (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Diameter as text
+%        str2double(get(hObject,'String')) returns contents of Diameter as a double
+Val=get(hObject,'String');
+NewVal=str2double(Val);
+handles.Diameter=NewVal;
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function Diameter_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Diameter (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in Pasos.
+function Pasos_Callback(hObject, eventdata, handles)
+% hObject    handle to Pasos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns Pasos contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from Pasos
+%Obtener el valor
+global Step;
+fun=get(hObject,'Value')
+    switch fun
+        case 1
+           Step = 1;
+        case 2
+            Step = 1/2;
+        case 3
+            Step = 1/4;
+        case 4
+            Step = 1/8;
+        case 5
+            Step = 1/16;
+        case 6
+            Step = 1/32;
+    end
+    guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function Pasos_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Pasos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function Port_Callback(hObject, eventdata, handles)
+% hObject    handle to Port (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Port as text
+%        str2double(get(hObject,'String')) returns contents of Port as a double
+Val = get(hObject,'String'); %Obtener la entrada del puerto
+handles.Port=Val;
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function Port_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Port (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in Calcular.
+function Calcular_Callback(hObject, eventdata, handles)
+% hObject    handle to Calcular (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+global Step; %Importar variables globales.
+global chuleadoX;
+global chuleadoY;
+global chuleadoZ;
+global s;
+if(chuleadoX == 1)%Condiciones de los checkbox.
+    %Se calcula el step por mm y se muestra, para luego enviarlo al CNC.
+    calculo = (200*(1/(Step))/(pi*handles.Diameter));
+    set(handles.PasosX,'String',calculo);
+    fopen(s);
+    fprintf(s,'$0='+num2str(calculo));
+    fclose(s);
+end
+if(chuleadoY==1)
+    calculo = (200*(1/(Step))/(pi*handles.Diameter));
+    set(handles.PasosY,'String',calculo);
+    fopen(s);
+    fprintf(s,'$1='+num2str(calculo));
+    fclose(s);
+end
+if(chuleadoZ==1)
+    calculo=(200*(1/(Step))/(pi*handles.Diameter));
+    set(handles.PasosZ,'String',calculo);
+    fopen(s);
+    fprintf(s,'$2='+num2str(calculo));
+    fclose(s);
+end
