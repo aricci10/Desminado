@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 07-Sep-2015 09:54:24
+% Last Modified by GUIDE v2.5 07-Sep-2015 14:49:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -395,4 +395,3 @@ input=handles.Speed;
 fopen(s);
 fprintf(s,'DolarVelocidad='+input);
 fclose(s);
-
