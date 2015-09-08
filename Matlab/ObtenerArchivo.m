@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 07-Sep-2015 18:59:41
+% Last Modified by GUIDE v2.5 08-Sep-2015 15:33:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -166,14 +166,11 @@ function Enviar_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global s;
+global consola;
 input = handles.Comandos; %Importar arreglo de Char.
-puerto=handles.Port;
-s=serial(puerto); %Declarar puerto COM1
-fopen(s); %Abrir puerto COM1
+consola = strvcat(consola,strcat('>>',input));
+set(handles.Resultado,'String',consola);
 fprintf(s,input); %Enviar código ya en binario a COM1.
-resulta=fscanf(s);
-set(handles.Resultado,'String',resulta);
-fclose(s); %Cerrar el serial.
 
 
 % --- Executes on button press in Info1.
@@ -360,27 +357,21 @@ if(chuleadoX == 1 && chuleadoY==0 && chuleadoZ==0)%Condiciones de los checkbox.
     set(handles.PasosX,'String',calculo);
     consola = strvcat(consola,strcat('>>>','$0=',num2str(calculo)));
     set(handles.Resultado,'String',consola);
-    fopen(s);
     fprintf(s,strcat('$0=',num2str(calculo)));
-    fclose(s);
 end
 if(chuleadoY==1 && chuleadoX==0 && chuleadoZ==0)
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosY,'String',calculo);
     consola = strvcat(consola,strcat('>>>','$1=',num2str(calculo)));
     set(handles.Resultado,'String',consola);
-    fopen(s);
     fprintf(s,strcat('$1=',num2str(calculo)));
-    fclose(s);
 end
 if(chuleadoZ==1 && chuleadoX==0 && chuleadoY==0)
     calculo=(200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosZ,'String',calculo);
     consola = strvcat(consola,strcat('>>>','$2=',num2str(calculo)));
     set(handles.Resultado,'String',consola);
-    fopen(s);
     fprintf(s,strcat('$2=',num2str(calculo)));
-    fclose(s);
 end
 
 
@@ -417,9 +408,7 @@ function loadSpeed_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global s;
 input=handles.Speed;
-fopen(s);
 fprintf(s,'DolarVelocidad='+input);
-fclose(s);
 
 
 
@@ -443,3 +432,23 @@ function Resultado_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in Connect.
+function Connect_Callback(hObject, eventdata, handles)
+% hObject    handle to Connect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+puerto=handles.Port;
+s=serial(puerto); %Declarar puerto COM1
+fopen(s);
+
+
+% --- Executes on button press in Disconnect.
+function Disconnect_Callback(hObject, eventdata, handles)
+% hObject    handle to Disconnect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+fclose(s);
