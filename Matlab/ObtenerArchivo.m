@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 07-Sep-2015 14:49:03
+% Last Modified by GUIDE v2.5 07-Sep-2015 18:59:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,6 +61,8 @@ guidata(hObject, handles);
 % UIWAIT makes ObtenerArchivo wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 axis off;
+global consola;
+consola = '';
 
 
 % --- Outputs from this function are returned to the command line.
@@ -336,28 +338,51 @@ global chuleadoX;
 global chuleadoY;
 global chuleadoZ;
 global s;
-if(chuleadoX == 1)%Condiciones de los checkbox.
-    %Se calcula el step por mm y se muestra, para luego enviarlo al CNC.
+global consola;
+if((chuleadoX == 1) && (chuleadoY == 1) && (chuleadoZ == 1))
+    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+end
+if(chuleadoX == 1 && chuleadoY ==1 && chuleadoZ == 0)
+    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+end
+if(chuleadoX == 0 && chuleadoY ==1 && chuleadoZ == 1)
+    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+end
+if(chuleadoX == 1 && chuleadoY ==0 && chuleadoZ == 1)
+    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+end
+if(chuleadoX == 0 && chuleadoY ==0 && chuleadoZ == 0)
+    errordlg('Se debe seleccionar una coordenada para modificar.','Error de Parámetros');
+end
+if(chuleadoX == 1 && chuleadoY==0 && chuleadoZ==0)%Condiciones de los checkbox.
+%Se calcula el step por mm y se muestra, para luego enviarlo al CNC.
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosX,'String',calculo);
+    consola = strvcat(consola,strcat('>>>','$0=',num2str(calculo)));
+    set(handles.Resultado,'String',consola);
     fopen(s);
-    fprintf(s,'$0='+num2str(calculo));
+    fprintf(s,strcat('$0=',num2str(calculo)));
     fclose(s);
 end
-if(chuleadoY==1)
+if(chuleadoY==1 && chuleadoX==0 && chuleadoZ==0)
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosY,'String',calculo);
+    consola = strvcat(consola,strcat('>>>','$1=',num2str(calculo)));
+    set(handles.Resultado,'String',consola);
     fopen(s);
-    fprintf(s,'$1='+num2str(calculo));
+    fprintf(s,strcat('$1=',num2str(calculo)));
     fclose(s);
 end
-if(chuleadoZ==1)
+if(chuleadoZ==1 && chuleadoX==0 && chuleadoY==0)
     calculo=(200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosZ,'String',calculo);
+    consola = strvcat(consola,strcat('>>>','$2=',num2str(calculo)));
+    set(handles.Resultado,'String',consola);
     fopen(s);
-    fprintf(s,'$2='+num2str(calculo));
+    fprintf(s,strcat('$2=',num2str(calculo)));
     fclose(s);
 end
+
 
 
 
@@ -395,3 +420,26 @@ input=handles.Speed;
 fopen(s);
 fprintf(s,'DolarVelocidad='+input);
 fclose(s);
+
+
+
+function Resultado_Callback(hObject, eventdata, handles)
+% hObject    handle to Resultado (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Resultado as text
+%        str2double(get(hObject,'String')) returns contents of Resultado as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function Resultado_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Resultado (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
