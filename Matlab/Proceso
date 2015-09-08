@@ -1,2 +1,0 @@
-Se actualiza la manera de enviar los comandos .g
-Se crea la interfaz con todo lo posible. Ya se ha logrado enviar comando directamente por puerto serial, lo cual se realiza en varios métodos. Es necesario encontrar la forma de solicitar de manera constante el estado al CNC. Esto queda pendiente.
