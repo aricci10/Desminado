@@ -336,9 +336,9 @@ global chuleadoY;
 global chuleadoZ;
 global s;
 global consola;
-if((chuleadoX == 1) && (chuleadoY == 1) && (chuleadoZ == 1))
-    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-end
+%if((chuleadoX == 1) && (chuleadoY == 1) && (chuleadoZ == 1))
+%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+%end
 if(chuleadoX == 1 && chuleadoY ==1 && chuleadoZ == 0)
     errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
 end
