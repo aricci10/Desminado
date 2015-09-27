@@ -441,7 +441,7 @@ function Connect_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global s;
 puerto=handles.Port;
-s=serial(puerto); %Declarar puerto COM1
+s=serial(puerto,'BaudRate',115200); %Declarar puerto serial y su BAUDRATE
 fopen(s);
 
 
