@@ -464,8 +464,8 @@ global s;
 limite = 10; %Tiempo en segundos durante el cual se realiza la lectura.
 contador = 0; %Contadora.
 while(contador < limite)
-    %lectura=fscanf(s); %Leer el serial
-    consola = strvcat(consola,'Hola'); %Añadir a variable de consola.
+    lectura=fscanf(s,'%s'); %Leer el serial en formato string.
+    consola = strvcat(consola,lectura); %Añadir a variable de consola.
     set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
     contador = contador +1;
     pause(1); %El descanso.
