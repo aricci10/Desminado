@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 08-Sep-2015 15:33:20
+% Last Modified by GUIDE v2.5 30-Sep-2015 19:11:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -452,3 +452,22 @@ function Disconnect_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global s;
 fclose(s);
+
+% --- Executes on button press in feedbackButton.
+function feedbackButton_Callback(hObject, eventdata, handles)
+% hObject    handle to feedbackButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%texto='';%La variable que da el feedback
+global consola;
+global s;
+limite = 10; %Tiempo en segundos durante el cual se realiza la lectura.
+contador = 0; %Contadora.
+while(contador < limite)
+    %lectura=fscanf(s); %Leer el serial
+    consola = strvcat(consola,'Hola'); %Añadir a variable de consola.
+    set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
+    contador = contador +1;
+    pause(1); %El descanso.
+end
+
