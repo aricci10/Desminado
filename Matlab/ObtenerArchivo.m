@@ -168,9 +168,12 @@ function Enviar_Callback(hObject, eventdata, handles)
 global s;
 global consola;
 input = handles.Comandos; %Importar arreglo de Char.
-consola = strvcat(consola,strcat('>>',input));
-set(handles.Resultado,'String',consola);
-fprintf(s,input); %Enviar código ya en binario a COM1.
+fprintf(s,input); %Enviar a serial
+lectura=fscanf(s,'%s'); %Leer el feedback
+%TODO : Concatenar la variable de lecutra a consola.
+consola = strvcat(consola,strcat('>>',input),lectura);
+set(handles.Resultado,'String',consola); %Mostrar lo enviado en consola
+%set(handles.Comandos,'String',vacio); %Limpiar línea de comandos.
 
 
 % --- Executes on button press in Info1.
@@ -355,23 +358,27 @@ if(chuleadoX == 1 && chuleadoY==0 && chuleadoZ==0)%Condiciones de los checkbox.
 %Se calcula el step por mm y se muestra, para luego enviarlo al CNC.
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosX,'String',calculo);
-    consola = strvcat(consola,strcat('>>>','$0=',num2str(calculo)));
+    lectura=fscanf(s,'%s'); %Leer el feedback
+    consola = strvcat(consola,strcat('>>>','$100=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
-    fprintf(s,strcat('$0=',num2str(calculo)));
+    fprintf(s,strcat('$100=',num2str(calculo)));
 end
 if(chuleadoY==1 && chuleadoX==0 && chuleadoZ==0)
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosY,'String',calculo);
-    consola = strvcat(consola,strcat('>>>','$1=',num2str(calculo)));
+    lectura=fscanf(s,'%s'); %Leer el feedback.
+    consola = strvcat(consola,strcat('>>>','$101=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
-    fprintf(s,strcat('$1=',num2str(calculo)));
+    fprintf(s,strcat('$101=',num2str(calculo)));
 end
 if(chuleadoZ==1 && chuleadoX==0 && chuleadoY==0)
     calculo=(200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosZ,'String',calculo);
-    consola = strvcat(consola,strcat('>>>','$2=',num2str(calculo)));
+    lectura=fscanf(s,'%s'); %Leer el serial en formato string.
+    set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
+    consola = strvcat(consola,strcat('>>>','$102=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
-    fprintf(s,strcat('$2=',num2str(calculo)));
+    fprintf(s,strcat('$102=',num2str(calculo)));
 end
 
 
@@ -451,7 +458,8 @@ function Disconnect_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global s;
-fclose(s);
+fclose(s); %Cerra el puerto por seguridad
+delete(s); %Borrar serial de la memoria de la palicación
 
 % --- Executes on button press in feedbackButton.
 function feedbackButton_Callback(hObject, eventdata, handles)
@@ -463,6 +471,7 @@ global consola;
 global s;
 limite = 10; %Tiempo en segundos durante el cual se realiza la lectura.
 contador = 0; %Contadora.
+borrar = 0; %Decidir cuando borrar.
 while(contador < limite)
     lectura=fscanf(s,'%s'); %Leer el serial en formato string.
     consola = strvcat(consola,lectura); %Añadir a variable de consola.
