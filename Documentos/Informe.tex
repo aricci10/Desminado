@@ -66,6 +66,11 @@ sudo apt-get install avrdude
 
 \item \textbf{Descargar GRBL y Flashearlo}\\
 Ahora, es necesario descargar todo lo relacionado a GRBL. Esto se puede realizar desde GitHub, en el enlace [1]. Para hacer esto, se recomienda, si es que es la primera vez que se trabaja con esta herramienta, seleccionar la opción \textbf{Download Zip} en la parte derecha de la página.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\textwidth]{BotonDescarga.png}
+\label{fig:Boton}
+\end{figure}
 
 El archivo zip descargado debe luego ser descomprimido en una carpeta cuya localización resulte fácil de recordar. Debido a como está en GitHub, el archivo descargado se llamará \textbf{grbl-edge}. Para continuar este procedimiento, se abre ahora la carpeta recién descargada, buscando el archivo llamada \textbf{Makefile}, el cual debe ser después abierto con un editor de texto de preferencia personal, en este caso \textbf{Gedit}, editor de texto predeterminado de Ubuntu.
 
@@ -407,9 +412,52 @@ lectura=fscanf(s,'%s'); %Leer el feedback.
 \end{lstlisting}
 Esta línea de código se coloca justo despues de la línea que incluye el comando \textbf{fprintf()}, de manera que tras recibir el código enviado, el CNC envía una respuesta que la interfaz recibe y provee al usuario por medio de la consola.
 
-{\centering \section{Creaci�n Codigo G}}
+{\centering \section{Construcción de Trayectorias predeterminadas}}
+Para el desplazamiento del dispositivo a través del área sobre la cual se desea trabajar, es necesario tener en cuenta los parametros de entrada con los cuales se carcteriza el área de barrido y la dimensión de los desplazamientos dentro de la misma. Para esto, se definen los siguientes parámetros:\\
+
+\begin{itemize}
+\item $A$= Ancho del área.
+\item $h$= Altura del área.
+\item $S_h$=Cantidad de pasos en el eje $y$
+\item $S_A$=Cantidad de pasos en el eje $x$
+\item $S_{x}$= Desplazamiento en la dirección de $A$ $(\frac{A}{S_A})$.
+\item $S_{y}$= Desplazamiento en la dirección de $h$ $(\frac{h}{S_h})$.
+\item $v$= Velocidad de Desplazamiento 
+\end{itemize}
+
+En la siguiente figura se puede observar una representación típica del área de trabajo con los parametros previamente descritos.
 
 
+
+Adicionalmente, se consideran los siguientes códigos códigos en G-code.
+\begin{table}[H]
+\centering
+\label{my-label}
+\begin{tabular}{|l|l|}
+\hline
+Comando & Descripción del comando                               \\ \hline
+G21     & Define las unidades en milímetros                     \\ \hline
+G90     & Define las coordenadas absolutas      \\ \hline
+G91     & Define las coordenadas incrementales \\ \hline
+G0      & Movimiento rápido                                     \\ \hline
+G1      & Movimiento a velocidad dada                                      \\ \hline
+f       & Velocidad de desplazamiento                           \\ \hline
+G92     & Define la posición de origen absoluta                 \\ \hline
+\end{tabular}
+\end{table}
+
+Para crear la trayectoria en matlab se inicia por definir una función con 5 parámetros y una salida. La salida es un vector de cadenas de caracteres que representan el código G que se desea enviar. Los parámetros de entrada son: $A$, $h$, $S_h$, $S_A$, $v$. Ahora, el primer paso es definir las variables $S_x$ y $S_{y}$ ya que estás funcionan como los parámetros del código G. La sintaxis correcta para el código de movimiento es la siguiente:\\
+
+G00XxxYyyZzz\\
+
+En donde xx, yy y zz representan la distancia que se desea mover en las respectivas coordenadas. De este modo:
+
+\begin{eqnarray}
+xx=S_x\\
+yy=S_y
+\end{eqnarray}
+
+De este modo, es necesario crear una función que dados los parámetros regrese el código necesario.
 
 {\centering \section{Bibliografía y Referencias}}
 \begin{enumerate}
