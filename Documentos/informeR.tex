@@ -1,0 +1,79 @@
+\documentclass[11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{physics}
+\usepackage{float}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\usepackage{listings}
+\usepackage{color}
+
+
+\title{Documentacion Trayectorias}
+
+
+
+\begin{document}
+\renewcommand{\tablename}{Tabla}
+
+\maketitle
+
+\section{Introducción}
+
+Para el desplazamiento del dispositivo a travez del área sobre la cual se desea trabajar, es necesario tener en cuenta los parametros de entrada con los cuales se carcteriza el área de barrido y la dimensión de los desplazamientos dentro de la misma. Para esto, se definen los siguientes parámetros:\\
+
+
+$A$= Ancho del área.\\
+$h$= Altura del área.\\
+$S_h$=Cantidad de pasos en el eje $y$\\
+$S_A$=Cantidad de pasos en el eje $x$\\
+$S_{x}$= Desplazamiento en la dirección de $A$ $(\frac{A}{S_A})$.\\
+$S_{y}$= Desplazamiento en la dirección de $h$ $(\frac{h}{S_h})$.\\
+$v$= Velocidad de Desplazamiento 
+
+
+En la siguiente figura se puede observar una representación típica del área de trabajo con los parametros previamente descritos.\\
+
+
+
+Adicionalmente, se consideran los siguientes códigos códigos en G-code.
+\begin{table}[H]
+\centering
+\label{my-label}
+\begin{tabular}{|l|l|}
+\hline
+Comando & Descripción del comando                               \\ \hline
+G21     & Define las unidades en milímetros                     \\ \hline
+G90     & Define las coordenadas como cordenadas absolutas      \\ \hline
+G91     & Define las coordenadas como corrdenadas incrementales \\ \hline
+G0      & Movimiento rápido                                     \\ \hline
+G1      & Movimiento a velocidad dada                                      \\ \hline
+f       & Velocidad de desplazamiento                           \\ \hline
+G92     & Define la posición de origen absoluta                 \\ \hline
+\end{tabular}
+\end{table}
+
+
+\section{Creación trayectorias Matlab}
+
+Para crear la trayectoria en matlab se inicia por definir una función con 5 parámetros y una salida. La salida es un vector de cadenas de caracteres que representan el código G que se desea enviar. Los parámetros de entrada son: $A$, $h$, $S_h$, $S_A$, $v$. Ahora, el primer paso es definir las variables $S_x$ y $S_{y}$ ya que estás funcionan como los parámetros del código G. La sintaxis correcta para el código de movimiento es la siguiente:\\
+
+G00XxxYyyZzz\\
+
+En donde xx, yy y zz representan la distancia que se desea mover en las respectivas coordenadas. De este modo:
+
+\begin{eqnarray}
+xx=S_x\\
+yy=S_y
+\end{eqnarray}
+
+De este modo, es necesario crear una función que dados los parámetros regrese el código necesario.
+
+
+
+\end{document}
