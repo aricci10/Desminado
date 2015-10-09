@@ -358,27 +358,26 @@ if(chuleadoX == 1 && chuleadoY==0 && chuleadoZ==0)%Condiciones de los checkbox.
 %Se calcula el step por mm y se muestra, para luego enviarlo al CNC.
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosX,'String',calculo);
+    fprintf(s,strcat('$100=',num2str(calculo)));
     lectura=fscanf(s,'%s'); %Leer el feedback
     consola = strvcat(consola,strcat('>>>','$100=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
-    fprintf(s,strcat('$100=',num2str(calculo)));
 end
 if(chuleadoY==1 && chuleadoX==0 && chuleadoZ==0)
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosY,'String',calculo);
+    fprintf(s,strcat('$101=',num2str(calculo)));
     lectura=fscanf(s,'%s'); %Leer el feedback.
     consola = strvcat(consola,strcat('>>>','$101=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
-    fprintf(s,strcat('$101=',num2str(calculo)));
 end
 if(chuleadoZ==1 && chuleadoX==0 && chuleadoY==0)
     calculo=(200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosZ,'String',calculo);
+    fprintf(s,strcat('$102=',num2str(calculo)));
     lectura=fscanf(s,'%s'); %Leer el serial en formato string.
-    set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
     consola = strvcat(consola,strcat('>>>','$102=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
-    fprintf(s,strcat('$102=',num2str(calculo)));
 end
 
 
