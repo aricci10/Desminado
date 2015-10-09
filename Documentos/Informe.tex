@@ -66,11 +66,6 @@ sudo apt-get install avrdude
 
 \item \textbf{Descargar GRBL y Flashearlo}\\
 Ahora, es necesario descargar todo lo relacionado a GRBL. Esto se puede realizar desde GitHub, en el enlace [1]. Para hacer esto, se recomienda, si es que es la primera vez que se trabaja con esta herramienta, seleccionar la opción \textbf{Download Zip} en la parte derecha de la página.
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.3\textwidth]{BotonDescarga.png}
-\label{fig:Boton}
-\end{figure}
 
 El archivo zip descargado debe luego ser descomprimido en una carpeta cuya localización resulte fácil de recordar. Debido a como está en GitHub, el archivo descargado se llamará \textbf{grbl-edge}. Para continuar este procedimiento, se abre ahora la carpeta recién descargada, buscando el archivo llamada \textbf{Makefile}, el cual debe ser después abierto con un editor de texto de preferencia personal, en este caso \textbf{Gedit}, editor de texto predeterminado de Ubuntu.
 
@@ -411,6 +406,10 @@ La función definida y documentada anteriormente se ejecuta cuando el botón \te
 lectura=fscanf(s,'%s'); %Leer el feedback.
 \end{lstlisting}
 Esta línea de código se coloca justo despues de la línea que incluye el comando \textbf{fprintf()}, de manera que tras recibir el código enviado, el CNC envía una respuesta que la interfaz recibe y provee al usuario por medio de la consola.
+
+{\centering \section{Creaci�n Codigo G}}
+
+
 
 {\centering \section{Bibliografía y Referencias}}
 \begin{enumerate}
