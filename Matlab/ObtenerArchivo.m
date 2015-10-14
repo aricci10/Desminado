@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 30-Sep-2015 19:11:20
+% Last Modified by GUIDE v2.5 13-Oct-2015 19:53:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -108,10 +108,26 @@ fun = get(hObject,'Value');
         case 1
             a = imread('A.png');
             imshow(a);
-            x=inputdlg({'Parámetro A','Parámetro B'},'Parámetros');
+            x=inputdlg({'Ancho','Altura','Step de Ancho','Step de Altura','Velocidad'},'Parámetros');
             %x será una celda de dos elementos.
             params=cell2mat(x);
             %params es un arreglo con estos valores.
+            codigo = parametros(params(1),params(2),params(3),params(4),params(5));
+            %codigo es un arreglo de strings.
+            tamano = length(params); %El tamaño del arreglo de parámetros.
+            contador = 1;
+            while (contador < tamano)
+                fprintf(s,codigo(contador)); %Enviar al serial la línea de código.
+                lectura = fscanf(s,'%s'); %La respuesta del CNC.
+                funciona = strcmp(lectura,'ok');
+                if(funciona == 0)
+                    mensaje = 'Hay error en el código usado.';
+                    consola = strvcat(consola,strcat('>>',mensaje),lectura);
+                    set(handles.Resultado,'String',consola); %Mostrar lo enviado en consola
+                    break
+                contador = contador + 1; %Actualizar el contador.
+                end
+            end
         case 2
             b = imread('B.jpg');
             imshow(b);
@@ -342,19 +358,19 @@ global consola;
 %if((chuleadoX == 1) && (chuleadoY == 1) && (chuleadoZ == 1))
 %    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
 %end
-if(chuleadoX == 1 && chuleadoY ==1 && chuleadoZ == 0)
-    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-end
-if(chuleadoX == 0 && chuleadoY ==1 && chuleadoZ == 1)
-    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-end
-if(chuleadoX == 1 && chuleadoY ==0 && chuleadoZ == 1)
-    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-end
-if(chuleadoX == 0 && chuleadoY ==0 && chuleadoZ == 0)
+%if((chuleadoX == 1) && (chuleadoY ==1) && (chuleadoZ == 0))
+%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+%end
+%if((chuleadoX == 0) && (chuleadoY ==1) && (chuleadoZ == 1))
+%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+%end
+%if((chuleadoX == 1) && (chuleadoY ==0) && (chuleadoZ == 1))
+%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
+%end
+if((chuleadoX == 0) && (chuleadoY ==0) && (chuleadoZ == 0))
     errordlg('Se debe seleccionar una coordenada para modificar.','Error de Parámetros');
 end
-if(chuleadoX == 1 && chuleadoY==0 && chuleadoZ==0)%Condiciones de los checkbox.
+if(chuleadoX == 1)%Condiciones de los checkbox.
 %Se calcula el step por mm y se muestra, para luego enviarlo al CNC.
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosX,'String',calculo);
@@ -363,7 +379,7 @@ if(chuleadoX == 1 && chuleadoY==0 && chuleadoZ==0)%Condiciones de los checkbox.
     consola = strvcat(consola,strcat('>>>','$100=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
 end
-if(chuleadoY==1 && chuleadoX==0 && chuleadoZ==0)
+if(chuleadoY==1)
     calculo = (200*(1/(Step))/(pi*handles.Diameter));
     set(handles.PasosY,'String',calculo);
     fprintf(s,strcat('$101=',num2str(calculo)));
@@ -371,10 +387,10 @@ if(chuleadoY==1 && chuleadoX==0 && chuleadoZ==0)
     consola = strvcat(consola,strcat('>>>','$101=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
 end
-if(chuleadoZ==1 && chuleadoX==0 && chuleadoY==0)
-    calculo=(200*(1/(Step))/(pi*handles.Diameter));
-    set(handles.PasosZ,'String',calculo);
-    fprintf(s,strcat('$102=',num2str(calculo)));
+if(chuleadoZ==1)
+    calculo=(200*(1/(Step))/(pi*handles.Diameter)); %Realizar el cálculo.
+    set(handles.PasosZ,'String',calculo); %Mostrar el resultado.
+    fprintf(s,strcat('$102=',num2str(calculo))); %Mandar código al puerto.
     lectura=fscanf(s,'%s'); %Leer el serial en formato string.
     consola = strvcat(consola,strcat('>>>','$102=',num2str(calculo)),lectura);
     set(handles.Resultado,'String',consola);
@@ -448,7 +464,7 @@ function Connect_Callback(hObject, eventdata, handles)
 global s;
 puerto=handles.Port;
 s=serial(puerto,'BaudRate',115200); %Declarar puerto serial y su BAUDRATE
-fopen(s);
+fopen(s); %Abrirlo permanentemente.
 
 
 % --- Executes on button press in Disconnect.
@@ -468,9 +484,8 @@ function feedbackButton_Callback(hObject, eventdata, handles)
 %texto='';%La variable que da el feedback
 global consola;
 global s;
-limite = 10; %Tiempo en segundos durante el cual se realiza la lectura.
+limite = 10000; %Tiempo en segundos durante el cual se realiza la lectura.
 contador = 0; %Contadora.
-borrar = 0; %Decidir cuando borrar.
 while(contador < limite)
     lectura=fscanf(s,'%s'); %Leer el serial en formato string.
     consola = strvcat(consola,lectura); %Añadir a variable de consola.
@@ -478,4 +493,3 @@ while(contador < limite)
     contador = contador +1;
     pause(1); %El descanso.
 end
-
