@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 13-Oct-2015 19:53:48
+% Last Modified by GUIDE v2.5 26-Oct-2015 10:06:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -116,10 +116,13 @@ fun = get(hObject,'Value');
             %codigo es un arreglo de strings.
             tamano = length(params); %El tamaño del arreglo de parámetros.
             contador = 1;
+            pausa = handles.delayTime;%Importing the delay time desired.
+            nPause = str2double(pausa); %Converting it to double.
             while (contador < tamano)
                 fprintf(s,codigo(contador)); %Enviar al serial la línea de código.
                 lectura = fscanf(s,'%s'); %La respuesta del CNC.
-                funciona = strcmp(lectura,'ok');
+                funciona = strcmp(lectura,'ok'); %Confirmation text.
+                pause(nPause); %Delay time between each command.
                 if(funciona == 0)
                     mensaje = 'Hay error en el código usado.';
                     consola = strvcat(consola,strcat('>>',mensaje),lectura);
@@ -484,7 +487,7 @@ function feedbackButton_Callback(hObject, eventdata, handles)
 %texto='';%La variable que da el feedback
 global consola;
 global s;
-limite = 10000; %Tiempo en segundos durante el cual se realiza la lectura.
+limite = 5; %Tiempo en segundos durante el cual se realiza la lectura.
 contador = 0; %Contadora.
 while(contador < limite)
     lectura=fscanf(s,'%s'); %Leer el serial en formato string.
@@ -492,4 +495,29 @@ while(contador < limite)
     set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
     contador = contador +1;
     pause(1); %El descanso.
+end
+
+
+
+function delayTime_Callback(hObject, eventdata, handles)
+% hObject    handle to delayTime (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of delayTime as text
+%        str2double(get(hObject,'String')) returns contents of delayTime as a double
+Val = get(hObject,'String'); %Save the user's selected delay time.
+handles.Port=Val;
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function delayTime_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to delayTime (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
