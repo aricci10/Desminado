@@ -114,23 +114,7 @@ fun = get(hObject,'Value');
             %params es un arreglo con estos valores.
             codigo = parametros(params(1),params(2),params(3),params(4),params(5));
             %codigo es un arreglo de strings.
-            tamano = length(params); %El tamaño del arreglo de parámetros.
-            contador = 1;
-            pausa = handles.delayTime;%Importing the delay time desired.
-            nPause = str2double(pausa); %Converting it to double.
-            while (contador < tamano)
-                fprintf(s,codigo(contador)); %Enviar al serial la línea de código.
-                lectura = fscanf(s,'%s'); %La respuesta del CNC.
-                funciona = strcmp(lectura,'ok'); %Confirmation text.
-                pause(nPause); %Delay time between each command.
-                if(funciona == 0)
-                    mensaje = 'Hay error en el código usado.';
-                    consola = strvcat(consola,strcat('>>',mensaje),lectura);
-                    set(handles.Resultado,'String',consola); %Mostrar lo enviado en consola
-                    break
-                contador = contador + 1; %Actualizar el contador.
-                end
-            end
+            uploadLine(codigo); %Calling the uploader script.
         case 2
             b = imread('B.jpg');
             imshow(b);
