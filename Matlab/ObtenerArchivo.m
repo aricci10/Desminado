@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 26-Oct-2015 10:06:48
+% Last Modified by GUIDE v2.5 28-Oct-2015 17:36:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,6 +63,8 @@ guidata(hObject, handles);
 axis off;
 global consola;
 consola = '';
+global posMatriz;
+posMatriz = [0 0];
 
 
 % --- Outputs from this function are returned to the command line.
@@ -385,42 +387,6 @@ end
 
 
 
-
-function Speed_Callback(hObject, eventdata, handles)
-% hObject    handle to Speed (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Speed as text
-%        str2double(get(hObject,'String')) returns contents of Speed as a double
-Val=get(hObject,'String'); %Recibir el parámetro de la velocidad.
-handles.Speed=Val;
-guidata(hObject,handles);
-
-% --- Executes during object creation, after setting all properties.
-function Speed_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Speed (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in loadSpeed.
-function loadSpeed_Callback(hObject, eventdata, handles)
-% hObject    handle to loadSpeed (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global s;
-input=handles.Speed;
-fprintf(s,'DolarVelocidad='+input);
-
-
-
 function Resultado_Callback(hObject, eventdata, handles)
 % hObject    handle to Resultado (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -505,3 +471,12 @@ function delayTime_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in saveButton.
+function saveButton_Callback(hObject, eventdata, handles)
+% hObject    handle to saveButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global posMatrix; %Import the global position matrix.
+save('positions.m',posMatrix); %Save in .m the position matrix.
