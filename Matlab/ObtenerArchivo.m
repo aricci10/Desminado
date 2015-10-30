@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 28-Oct-2015 17:36:36
+% Last Modified by GUIDE v2.5 29-Oct-2015 19:14:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,10 +61,11 @@ guidata(hObject, handles);
 % UIWAIT makes ObtenerArchivo wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 axis off;
-global consola;
-consola = '';
-global posMatriz;
-posMatriz = [0 0];
+global consola; %Create the console.
+consola = ''; %Initialize it in blank.
+global posMatriz; %Create the position matrix
+posMatriz = [0 0]; %Initialize it in the origin.
+global basicSettings; %Create the basic settings matrix.
 
 
 % --- Outputs from this function are returned to the command line.
@@ -179,7 +180,25 @@ lectura=fscanf(s,'%s'); %Leer el feedback
 consola = strvcat(consola,strcat('>>',input),lectura);
 set(handles.Resultado,'String',consola); %Mostrar lo enviado en consola
 %set(handles.Comandos,'String',vacio); %Limpiar línea de comandos.
-
+ready = false; %Stopping condition.
+while(ready == false)
+    statusData = askStatus(); %Get current status info.
+    xPos = statusData(2);
+    yPos = statusData(3);
+    free = statusData(1);
+    set(handles.XPos,'String',xPos); %Display current X position.
+    set(handles.YPos,'String',yPos); %Display current Y position.
+    set(handles.currentStatus,'String',free); %Dissplay movement status.
+    comp = strcmp(free,'Idle'); %Check if it is free already.
+    get(handles.currentStatus,'BackgroundColor'); %Import the capacity of editing color.
+    if(comp == false)
+        set(handles.currentStatus,'BackgroundColor','red'); %Red background.
+    end
+    if(comp == true)
+        ready = true;
+        set(handles.currentStatus,'BackgroundColor','green'); %Green background.
+    end
+end
 
 % --- Executes on button press in Info1.
 function Info1_Callback(hObject, eventdata, handles)
@@ -457,8 +476,10 @@ function delayTime_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of delayTime as text
 %        str2double(get(hObject,'String')) returns contents of delayTime as a double
 Val = get(hObject,'String'); %Save the user's selected delay time.
-handles.Port=Val;
+handles.delayTime=Val;
 guidata(hObject,handles);
+global delayTimeValue; %Waiting time.
+delayTimeValue = handles.delayTime; %Updating the global variable.
 
 % --- Executes during object creation, after setting all properties.
 function delayTime_CreateFcn(hObject, eventdata, handles)
@@ -479,4 +500,32 @@ function saveButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global posMatrix; %Import the global position matrix.
-save('positions.m',posMatrix); %Save in .m the position matrix.
+save('positions.mat',posMatrix); %Save in .m the position matrix.
+
+
+% --- Executes during object creation, after setting all properties.
+function currentStatus_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to currentStatus (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function PosX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PosX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function PosY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PosY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function PosZ_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PosZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

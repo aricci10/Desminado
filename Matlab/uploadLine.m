@@ -1,28 +1,18 @@
 function uploadLine(codeArray)
 global s; %Using the desired port.
 global posMatrix; %Using the global position matrix.
+global delayTimeValue;
 range = length(codeArray); %Length of gcode array.
 for n=1:(range - 1)
-    fprintf(s,'?'); %Checking current movement status.
-    response = fscanf(s,'%s'); %The feedback from th CNC.
-    response1= strrep(response,'<',''); %Some aesthetics changes.
-    response2= strrep(response1,'>','');
-    data = strsplit(response2,','); %Divide into the array of data.
-    status = data(1); %Movement completition.
-    
-    %Parallel to the line uploading, the current position data is also
-    %uploaded to the position matrix and position panel of the user
-    %interface.
-    xPos1 = data(2); %X position. Given with extra text, so it must be cleansed.
-    xPos2 = strrep(xPos1,'WPos:','');
-    xPos = str2num(xPos2); %Final X position.
-    yPos = str2num(data(3)); %Y position
-    currentPos = [xPos,yPos]; %Vector of current position. In mm.
-    posMatrix = vertcat(posMatrix,currentPos); %Updating position matrix.
-    
-    comparison = strcmp(status,'Idle'); %Boolean of actual status.
-    stop = true; %Checbox condition.
     while(stop == true) %Checking availability.
+        theData = askStatus(); %The STRING array of the current status.
+        xPosition = str2num(theData(2));
+        yPosition = str2num(theData(3));
+        currentPos = [xPosition,yPosition]; %Vector of current position. In mm.
+        posMatrix = vertcat(posMatrix,currentPos); %Updating position matrix.
+    
+        comparison = strcmp(theData(1),'Idle'); %Boolean of actual status.
+        stop = true; %Checkbox condition.
         if(comparison == true) %Succesful case.
             fprintf(s,codeArray(n)); %Print each gcode linea from file.
             stop = false; %Update availability.
@@ -42,8 +32,10 @@ for n=1:(range - 1)
         errordlg(message2,'Error in Uploaded Trajectory'); %Explaining the error.
         break
     end
-        
+    pause(delayTimeValue); %Waiting time/Delay in seconds.
 end
+end
+        
     
             
             
