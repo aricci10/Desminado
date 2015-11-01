@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 31-Oct-2015 23:51:37
+% Last Modified by GUIDE v2.5 01-Nov-2015 00:28:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,7 +65,7 @@ global consola; %Create the console.
 consola = ''; %Initialize it in blank.
 global posMatriz; %Create the position matrix
 posMatriz = [0 0]; %Initialize it in the origin.
-global basicSettings; %Create the basic settings matrix.
+
 
 
 % --- Outputs from this function are returned to the command line.
@@ -532,7 +532,14 @@ function PosZ_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 
-% --- Executes on button press in userInfo.
+% --------------------------------------------------------------------
+function initialSettings_Callback(hObject, eventdata, handles)
+% hObject    handle to initialSettings (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
 function userInfo_Callback(hObject, eventdata, handles)
 % hObject    handle to userInfo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -540,8 +547,83 @@ function userInfo_Callback(hObject, eventdata, handles)
 info=inputdlg({'Date','User Name','Measurement Description'},'User Information'); %User's information.
 uisave('info'); %Prompt the user to save the mat file of his/her info.
 
-% --- Executes on button press in antennaInfo.
+
+% --------------------------------------------------------------------
 function antennaInfo_Callback(hObject, eventdata, handles)
 % hObject    handle to antennaInfo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function antennaCenters_Callback(hObject, eventdata, handles)
+% hObject    handle to antennaCenters (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function antenna1_Callback(hObject, eventdata, handles)
+% hObject    handle to antenna1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaPosMatrix; %The matrix containing antenna positions.
+info = inputdlg({'X Position','Y Position'},'Antenna 1 Settings'); %User input.
+xPos = str2num(info{1});
+yPos=str2num(info{2});
+antennaPosMatrix = vertcat(antennaPosMatrix,[1 xPos yPos 0]);
+
+% --------------------------------------------------------------------
+function antenna2_Callback(hObject, eventdata, handles)
+% hObject    handle to antenna2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaPosMatrix; %Import the antenna conf. matrix.
+info = inputdlg({'X Position', 'Y Position'},'Antenna 2 Settings'); %User input
+xPos = str2num(info{1});
+yPos=str2num(info{2});
+antennaPosMatrix=vercat(antennaPosMatrix,[2 xPos yPos 0]);
+
+% --------------------------------------------------------------------
+function antenna3_Callback(hObject, eventdata, handles)
+% hObject    handle to antenna3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaPosMatrix;
+info=inputdlg({'X Position','Y Position'},'Antenna 3 Settings');
+xPos=str2num(info{1});
+yPos=str2num(info{2});
+antennaPosMatrix=vertcat(antennaPosMatrix,[3 xPos yPos 0]);
+
+
+% --------------------------------------------------------------------
+function antenna4_Callback(hObject, eventdata, handles)
+% hObject    handle to antenna4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaPosMatrix;
+info=inputdlg({'X Position','Y Position'},'Antenna 4 Settings');
+xPos=str2num(info{1});
+yPos=str2num(info{2});
+antennaPosMatrix=vertcat(antennaPosMatrix,[4 xPos yPos 0]);
+
+% --------------------------------------------------------------------
+function antenna5_Callback(hObject, eventdata, handles)
+% hObject    handle to antenna5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaPosMatrix;
+info=inputdlg({'X position','Y Position'},'Antenna 5 Settings');
+xPos=str2num(info{1});
+yPos=str2num(info{2});
+antennaPosMatrix=vercat(antennaPosMatrix,[5 xPos yPos 0]);
+% --------------------------------------------------------------------
+function antenna6_Callback(hObject, eventdata, handles)
+% hObject    handle to antenna6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaPosMatrix;
+info=inputdlg({'X Position','Y Position'},'Antenna 6 Settings');
+xPos=str2num(info{1});
+yPos=str2num(info{2});
+antennaPosMatrix=vertcat(antennaPosMatrix,[6 xPos yPos 0]);
