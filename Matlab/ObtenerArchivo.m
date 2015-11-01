@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 01-Nov-2015 00:28:49
+% Last Modified by GUIDE v2.5 01-Nov-2015 17:27:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -627,3 +627,50 @@ info=inputdlg({'X Position','Y Position'},'Antenna 6 Settings');
 xPos=str2num(info{1});
 yPos=str2num(info{2});
 antennaPosMatrix=vertcat(antennaPosMatrix,[6 xPos yPos 0]);
+
+
+% --------------------------------------------------------------------
+function radiationCenter_Callback(hObject, eventdata, handles)
+% hObject    handle to radiationCenter (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global radiationCenter;
+center = inputdlg('Radiation Center','Radiation Center Z Location');
+radiationCenter = str2num(center{1});
+
+
+% --------------------------------------------------------------------
+function orientation_Callback(hObject, eventdata, handles)
+% hObject    handle to orientation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaOrientation;
+angles=inputdlg({'Yaw','Roll','Pitch'},'Array Orientation Angles');
+yaw=str2num(angles{1});
+roll=str2num(angles{2});
+pitch=str2num(angles{3});
+antennaOrientation = [yaw roll pitch];
+
+
+% --------------------------------------------------------------------
+function saveSettings_Callback(hObject, eventdata, handles)
+% hObject    handle to saveSettings (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaOrientation;
+global radiationCenter;
+global antennaPosMatrix;
+uisave({'antennaOrientation','radiationCenter','antennaPosMatrix'});
+
+
+% --------------------------------------------------------------------
+function connections_Callback(hObject, eventdata, handles)
+% hObject    handle to connections (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+colName={'A1X','A1Y','A2X','A2Y','A3X','A3Y','A4X','A4Y','A5X','A5Y','A6X','A6Y'};
+colFormat = {'numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric'};
+colEditable = [true true true true true true true true true true true];
+data = createTable();
+widths = {40 40 40 40 40 40 40 40 40 40 40 40};
+t = uitable('Data',data,'ColumnName',colName,'ColumnFormat',colFormat,'ColumnEditable',colEditable,'Position',[2 100 520 250],'ColumnWidth',widths);
