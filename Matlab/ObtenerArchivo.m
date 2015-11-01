@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 29-Oct-2015 19:14:05
+% Last Modified by GUIDE v2.5 31-Oct-2015 23:51:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -176,19 +176,17 @@ global consola;
 input = handles.Comandos; %Importar arreglo de Char.
 fprintf(s,input); %Enviar a serial
 lectura=fscanf(s,'%s'); %Leer el feedback
-%TODO : Concatenar la variable de lecutra a consola.
 consola = strvcat(consola,strcat('>>',input),lectura);
 set(handles.Resultado,'String',consola); %Mostrar lo enviado en consola
-%set(handles.Comandos,'String',vacio); %Limpiar línea de comandos.
 ready = false; %Stopping condition.
 while(ready == false)
     statusData = askStatus(); %Get current status info.
     xPos = statusData(2);
     yPos = statusData(3);
     free = statusData(1);
-    set(handles.XPos,'String',xPos); %Display current X position.
-    set(handles.YPos,'String',yPos); %Display current Y position.
-    set(handles.currentStatus,'String',free); %Dissplay movement status.
+    set(handles.PosX,'String',xPos); %Display current X position.
+    set(handles.PosY,'String',yPos); %Display current Y position.
+    set(handles.currentStatus,'String',free); %Display movement status.
     comp = strcmp(free,'Idle'); %Check if it is free already.
     get(handles.currentStatus,'BackgroundColor'); %Import the capacity of editing color.
     if(comp == false)
@@ -197,7 +195,10 @@ while(ready == false)
     if(comp == true)
         ready = true;
         set(handles.currentStatus,'BackgroundColor','green'); %Green background.
+        consola = strvcat(consola,'Movement finished!');
+        set(handles.Resultado,'String',consola);
     end
+    pause(0.25); %Waiting for the next iteration.
 end
 
 % --- Executes on button press in Info1.
@@ -529,3 +530,18 @@ function PosZ_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to PosZ (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on button press in userInfo.
+function userInfo_Callback(hObject, eventdata, handles)
+% hObject    handle to userInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+info=inputdlg({'Date','User Name','Measurement Description'},'User Information'); %User's information.
+uisave('info'); %Prompt the user to save the mat file of his/her info.
+
+% --- Executes on button press in antennaInfo.
+function antennaInfo_Callback(hObject, eventdata, handles)
+% hObject    handle to antennaInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
