@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 01-Nov-2015 17:27:39
+% Last Modified by GUIDE v2.5 01-Nov-2015 19:20:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -45,7 +45,7 @@ end
 
 
 % --- Executes just before ObtenerArchivo is made visible.
-function ObtenerArchivo_OpeningFcn(hObject, eventdata, handles, varargin)
+function ObtenerArchivo_OpeningFcn(hObject, ~, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -69,7 +69,7 @@ posMatriz = [0 0]; %Initialize it in the origin.
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = ObtenerArchivo_OutputFcn(hObject, eventdata, handles) 
+function varargout = ObtenerArchivo_OutputFcn(~, ~, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -79,11 +79,11 @@ function varargout = ObtenerArchivo_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % --- Executes on button press in Cargar.
-function Cargar_Callback(hObject, eventdata, handles)
+function Cargar_Callback(~, ~, ~)
 % hObject    handle to Cargar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[Filename Path]=uigetfile({'*.txt'},'Abrir archivo');
+[Filename, Path]=uigetfile({'*.txt'},'Abrir archivo');
 if isequal(Filename,0)
     return
 else
@@ -92,7 +92,7 @@ end
 
 
 % --- Executes on button press in Info.
-function Info_Callback(hObject, eventdata, handles)
+function Info_Callback(~, ~, handles)
 % hObject    handle to Info (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -495,15 +495,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in saveButton.
-function saveButton_Callback(hObject, eventdata, handles)
-% hObject    handle to saveButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global posMatrix; %Import the global position matrix.
-save('positions.mat',posMatrix); %Save in .m the position matrix.
-
-
 % --- Executes during object creation, after setting all properties.
 function currentStatus_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to currentStatus (see GCBO)
@@ -668,9 +659,24 @@ function connections_Callback(hObject, eventdata, handles)
 % hObject    handle to connections (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-colName={'A1X','A1Y','A2X','A2Y','A3X','A3Y','A4X','A4Y','A5X','A5Y','A6X','A6Y'};
-colFormat = {'numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric','numeric'};
-colEditable = [true true true true true true true true true true true];
-data = createTable();
-widths = {40 40 40 40 40 40 40 40 40 40 40 40};
-t = uitable('Data',data,'ColumnName',colName,'ColumnFormat',colFormat,'ColumnEditable',colEditable,'Position',[2 100 520 250],'ColumnWidth',widths);
+
+% --------------------------------------------------------------------
+function saveConnections_Callback(hObject, eventdata, handles)
+% hObject    handle to saveConnections (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+data = get(handles.connectionTable,'Data');
+dataF = cell2mat(data);
+uisave('dataF');
+
+
+% --- Executes when entered data in editable cell(s) in connectionTable.
+function connectionTable_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to connectionTable (see GCBO)
+% eventdata  structure with the following fields (see UITABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
