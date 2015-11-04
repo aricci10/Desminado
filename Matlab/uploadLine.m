@@ -1,4 +1,5 @@
 function uploadLine(codeArray)
+%Function in charge of uploading succesive lines from a Gcode text file.
 global s; %Using the desired port.
 global posMatrix; %Using the global position matrix.
 global delayTimeValue;

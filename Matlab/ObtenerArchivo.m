@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 01-Nov-2015 19:20:38
+% Last Modified by GUIDE v2.5 03-Nov-2015 17:33:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,6 +65,10 @@ global consola; %Create the console.
 consola = ''; %Initialize it in blank.
 global posMatriz; %Create the position matrix
 posMatriz = [0 0]; %Initialize it in the origin.
+global antennaPosMatrix;
+antennaPosMatrix = [0 0 0 0];
+%Setting some size adjustments
+
 
 
 
@@ -536,7 +540,14 @@ function userInfo_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 info=inputdlg({'Date','User Name','Measurement Description'},'User Information'); %User's information.
-uisave('info'); %Prompt the user to save the mat file of his/her info.
+data = cell2mat(info);
+date = data(1);
+name = data(2);
+description = data(3);
+set(handles.userName,'String',name);                                        %Setting each data into the feedback static text.
+set(handles.date,'String',date);
+set(handles.description,'String',description);
+uisave('info');                                                             %Prompt the user to save the mat file of his/her info.
 
 
 % --------------------------------------------------------------------
@@ -559,21 +570,23 @@ function antenna1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global antennaPosMatrix; %The matrix containing antenna positions.
-info = inputdlg({'X Position','Y Position'},'Antenna 1 Settings'); %User input.
+info = inputdlg({'X Position','Y Position'},'Antenna 1 Settings');          %User input.
 xPos = str2num(info{1});
 yPos=str2num(info{2});
-antennaPosMatrix = vertcat(antennaPosMatrix,[1 xPos yPos 0]);
+antenna1Pos = [1 xPos yPos 0];
+antennaPosMatrix = vertcat(antennaPosMatrix,antenna1Pos);
 
 % --------------------------------------------------------------------
 function antenna2_Callback(hObject, eventdata, handles)
 % hObject    handle to antenna2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global antennaPosMatrix; %Import the antenna conf. matrix.
-info = inputdlg({'X Position', 'Y Position'},'Antenna 2 Settings'); %User input
+global antennaPosMatrix;                                                   %Import the antenna conf. matrix.
+info = inputdlg({'X Position', 'Y Position'},'Antenna 2 Settings');        %User input
 xPos = str2num(info{1});
 yPos=str2num(info{2});
-antennaPosMatrix=vercat(antennaPosMatrix,[2 xPos yPos 0]);
+antenna2Pos = [2 xPos yPos 0];
+antennaPosMatrix=vercat(antennaPosMatrix,antenna2Pos);
 
 % --------------------------------------------------------------------
 function antenna3_Callback(hObject, eventdata, handles)
@@ -584,7 +597,8 @@ global antennaPosMatrix;
 info=inputdlg({'X Position','Y Position'},'Antenna 3 Settings');
 xPos=str2num(info{1});
 yPos=str2num(info{2});
-antennaPosMatrix=vertcat(antennaPosMatrix,[3 xPos yPos 0]);
+antenna3Pos = [3 xPos yPos 0];
+antennaPosMatrix=vertcat(antennaPosMatrix,antenna3Pos);
 
 
 % --------------------------------------------------------------------
@@ -596,7 +610,8 @@ global antennaPosMatrix;
 info=inputdlg({'X Position','Y Position'},'Antenna 4 Settings');
 xPos=str2num(info{1});
 yPos=str2num(info{2});
-antennaPosMatrix=vertcat(antennaPosMatrix,[4 xPos yPos 0]);
+antenna4Pos = [4 xPos yPos 0];
+antennaPosMatrix=vertcat(antennaPosMatrix,antenna4Pos);
 
 % --------------------------------------------------------------------
 function antenna5_Callback(hObject, eventdata, handles)
@@ -607,7 +622,8 @@ global antennaPosMatrix;
 info=inputdlg({'X position','Y Position'},'Antenna 5 Settings');
 xPos=str2num(info{1});
 yPos=str2num(info{2});
-antennaPosMatrix=vercat(antennaPosMatrix,[5 xPos yPos 0]);
+antenna5Pos = [5 xPos yPos 0];
+antennaPosMatrix=vercat(antennaPosMatrix,antenna5Pos);
 % --------------------------------------------------------------------
 function antenna6_Callback(hObject, eventdata, handles)
 % hObject    handle to antenna6 (see GCBO)
@@ -617,7 +633,8 @@ global antennaPosMatrix;
 info=inputdlg({'X Position','Y Position'},'Antenna 6 Settings');
 xPos=str2num(info{1});
 yPos=str2num(info{2});
-antennaPosMatrix=vertcat(antennaPosMatrix,[6 xPos yPos 0]);
+antenna6Pos = [6 xPos yPos 0];
+antennaPosMatrix=vertcat(antennaPosMatrix,antenna6Pos);
 
 
 % --------------------------------------------------------------------
@@ -651,6 +668,7 @@ function saveSettings_Callback(hObject, eventdata, handles)
 global antennaOrientation;
 global radiationCenter;
 global antennaPosMatrix;
+antennaPosMatrix(1,:)=[];
 uisave({'antennaOrientation','radiationCenter','antennaPosMatrix'});
 
 
@@ -680,3 +698,56 @@ function connectionTable_CellEditCallback(hObject, eventdata, handles)
 %	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function loadConnections_Callback(hObject, eventdata, handles)
+% hObject    handle to loadConnections (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global connectionInfo;
+name = uigetfile;
+variable = load('name');
+nameF = fieldnames(variable);
+variable=variable.(nameF{1});
+connectionInfo = variable;
+
+
+% --------------------------------------------------------------------
+function loadSettings_Callback(hObject, eventdata, handles)
+% hObject    handle to loadSettings (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global antennaInfoOrientation; %Matrix of orientation angles.
+global antennaInfoCenters; %Matrix of radiation centers
+global antennaInfoPos;
+name = uigetfile;
+variable=load('name');
+nameF=fieldnames(variable);
+variable1=variable.(nameF{1});
+variable2=variable.(nameF{2});
+variable3=variable.(nameF{3});
+antennaInfoOrientation=variable1;
+antennaInfoCenters=variable2;
+antennaInfoPos = variable3;
+
+
+% --- Executes during object creation, after setting all properties.
+function userName_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to userName (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function date_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to date (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function description_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to description (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
