@@ -573,11 +573,13 @@ function antenna1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global antennaPosMatrix; %The matrix containing antenna positions.
-info = inputdlg({'X Position','Y Position'},'Antenna 1 Settings');          %User input.
+info = inputdlg({'X Position','Y Position'},'Antenna 1 Settings');         %User input for the antenna 1 position.
 xPos = str2num(info{1});
 yPos=str2num(info{2});
 antenna1Pos = [1 xPos yPos 0];
 antennaPosMatrix = vertcat(antennaPosMatrix,antenna1Pos);
+set(handles.antenna1Disp,'String',info{1});                                %Display de position of antenna 1 in the array.
+set(handles.antenna1DispY,'String',info{2});                               %Display de Y position of the natenna 1 in the array.
 
 % --------------------------------------------------------------------
 function antenna2_Callback(hObject, eventdata, handles)
@@ -589,7 +591,9 @@ info = inputdlg({'X Position', 'Y Position'},'Antenna 2 Settings');        %User
 xPos = str2num(info{1});
 yPos=str2num(info{2});
 antenna2Pos = [2 xPos yPos 0];
-antennaPosMatrix=vercat(antennaPosMatrix,antenna2Pos);
+antennaPosMatrix=vertcat(antennaPosMatrix,antenna2Pos);
+set(handles.antenna2Disp,'String',info{1});                                %Display de X and Y positions of antenna 2 in the array.
+set(handles.antenna2DispY,'String',info{2});
 
 % --------------------------------------------------------------------
 function antenna3_Callback(hObject, eventdata, handles)
@@ -602,6 +606,8 @@ xPos=str2num(info{1});
 yPos=str2num(info{2});
 antenna3Pos = [3 xPos yPos 0];
 antennaPosMatrix=vertcat(antennaPosMatrix,antenna3Pos);
+set(handles.antenna3Disp,'String',info{1});                                %Display X and Y position of antenna 3 in the array.
+set(handles.antenna3DispY,'String',info{2});
 
 
 % --------------------------------------------------------------------
@@ -615,6 +621,8 @@ xPos=str2num(info{1});
 yPos=str2num(info{2});
 antenna4Pos = [4 xPos yPos 0];
 antennaPosMatrix=vertcat(antennaPosMatrix,antenna4Pos);
+set(handles.antenna4Disp,'String',info{1});                                %Display X and Y position of antenna 4 in the array.
+set(handles.antenna4DispY,'String',info{2});
 
 % --------------------------------------------------------------------
 function antenna5_Callback(hObject, eventdata, handles)
@@ -626,7 +634,9 @@ info=inputdlg({'X position','Y Position'},'Antenna 5 Settings');
 xPos=str2num(info{1});
 yPos=str2num(info{2});
 antenna5Pos = [5 xPos yPos 0];
-antennaPosMatrix=vercat(antennaPosMatrix,antenna5Pos);
+antennaPosMatrix=vertcat(antennaPosMatrix,antenna5Pos);
+set(handles.antenna5Disp,'String',info{1});                                %Display X and Y position of antenna 5 in the array.
+set(handles.antenna5DispY,'String',info{2});
 % --------------------------------------------------------------------
 function antenna6_Callback(hObject, eventdata, handles)
 % hObject    handle to antenna6 (see GCBO)
