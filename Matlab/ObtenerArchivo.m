@@ -539,15 +539,18 @@ function userInfo_Callback(hObject, eventdata, handles)
 % hObject    handle to userInfo (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global userGlobalInfo;                                                     %Global variable of user information.
 info=inputdlg({'Date','User Name','Measurement Description'},'User Information'); %User's information.
-data = cell2mat(info);
-date = data(1);
-name = data(2);
-description = data(3);
-set(handles.userName,'String',name);                                        %Setting each data into the feedback static text.
+%data = cell2mat(info);
+data=info;
+userGlobalInfo = data;                                                     %Assigning the global variable with inputs.
+date = data{1};
+name = data{2};
+description = data{3};
+set(handles.userName,'String',name);                                       %Setting each data into the feedback static text.
 set(handles.date,'String',date);
 set(handles.description,'String',description);
-uisave('info');                                                             %Prompt the user to save the mat file of his/her info.
+uisave('info');                                                            %Prompt the user to save the mat file of his/her info.
 
 
 % --------------------------------------------------------------------
