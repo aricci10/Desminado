@@ -22,7 +22,7 @@ function varargout = ObtenerArchivo(varargin)
 
 % Edit the above text to modify the response to help ObtenerArchivo
 
-% Last Modified by GUIDE v2.5 03-Nov-2015 17:33:13
+% Last Modified by GUIDE v2.5 07-Nov-2015 15:42:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,7 +67,6 @@ global posMatriz; %Create the position matrix
 posMatriz = [0 0]; %Initialize it in the origin.
 global antennaPosMatrix;
 antennaPosMatrix = [0 0 0 0];
-%Setting some size adjustments
 
 
 
@@ -82,18 +81,6 @@ function varargout = ObtenerArchivo_OutputFcn(~, ~, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-% --- Executes on button press in Cargar.
-function Cargar_Callback(~, ~, ~)
-% hObject    handle to Cargar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-[Filename, Path]=uigetfile({'*.txt'},'Abrir archivo');
-if isequal(Filename,0)
-    return
-else
-    winopen(strcat(Path,Filename));
-end
-
 
 % --- Executes on button press in Info.
 function Info_Callback(~, ~, handles)
@@ -101,49 +88,6 @@ function Info_Callback(~, ~, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 msgbox('Este programa permite cargar un archivo .g para ser enviado, enviar comandos manualmente o seleccionar una de las trayectorias predeterminadas.','Información'); %Info de las trayectorias.
-
-% --- Executes on selection change in Predet.
-function Predet_Callback(hObject, eventdata, handles)
-% hObject    handle to Predet (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns Predet contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from Predet
-fun = get(hObject,'Value');
-    switch fun
-        case 1
-            a = imread('A.png');
-            imshow(a);
-            x=inputdlg({'Ancho','Altura','Step de Ancho','Step de Altura','Velocidad'},'Parámetros');
-            %x será una celda de dos elementos.
-            params=cell2mat(x);
-            %params es un arreglo con estos valores.
-            codigo = parametros(params(1),params(2),params(3),params(4),params(5));
-            %codigo es un arreglo de strings.
-            uploadLine(codigo); %Calling the uploader script.
-        case 2
-            b = imread('B.jpg');
-            imshow(b);
-        case 3
-            c = imread('C.png');
-            imshow(c);
-                
-    end
-guidata(hObject,handles);
-% --- Executes during object creation, after setting all properties.
-function Predet_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Predet (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
 
 function Comandos_Callback(hObject, eventdata, handles)
 % hObject    handle to Comandos (see GCBO)
@@ -205,212 +149,6 @@ while(ready == false)
     pause(0.25); %Waiting for the next iteration.
 end
 
-% --- Executes on button press in Info1.
-function Info1_Callback(hObject, eventdata, handles)
-% hObject    handle to Info1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-msgbox('Esta trayectoria realiza un barrido dado por la geometría mostrada en la figura. Para construirlo, el usuario debe dar los parámetros requeridos.','Trayectoria 1');
-%Info de la trayectoria 1.
-
-% --- Executes on button press in Info2.
-function Info2_Callback(hObject, eventdata, handles)
-% hObject    handle to Info2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in Info3.
-function Info3_Callback(hObject, eventdata, handles)
-% hObject    handle to Info3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in checkbox1.
-function checkbox1_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hint: get(hObject,'Value') returns toggle state of checkbox1
-global chuleadoX;
-if(get(hObject,'Value')== get(hObject,'Max'))
-    chuleadoX=1;
-else
-    chuleadoX=0;
-end
-% --- Executes on button press in checkbox2.
-function checkbox2_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hint: get(hObject,'Value') returns toggle state of checkbox2
-global chuleadoY;
-if(get(hObject,'Value')==get(hObject,'Max'))
-    chuleadoY = 1;
-else
-    chuleadoY=0;
-end
-
-% --- Executes on button press in checkbox3.
-function checkbox3_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox3
-global chuleadoZ;
-if(get(hObject,'Value')==get(hObject,'Max'))
-    chuleadoZ=1;
-else
-    chuleadoZ=0;
-end
-    
-
-
-function Diameter_Callback(hObject, eventdata, handles)
-% hObject    handle to Diameter (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Diameter as text
-%        str2double(get(hObject,'String')) returns contents of Diameter as a double
-Val=get(hObject,'String');
-NewVal=str2double(Val);
-handles.Diameter=NewVal;
-guidata(hObject,handles);
-
-% --- Executes during object creation, after setting all properties.
-function Diameter_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Diameter (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on selection change in Pasos.
-function Pasos_Callback(hObject, eventdata, handles)
-% hObject    handle to Pasos (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns Pasos contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from Pasos
-%Obtener el valor
-global Step;
-fun=get(hObject,'Value')
-    switch fun
-        case 1
-           Step = 1;
-        case 2
-            Step = 1/2;
-        case 3
-            Step = 1/4;
-        case 4
-            Step = 1/8;
-        case 5
-            Step = 1/16;
-        case 6
-            Step = 1/32;
-    end
-    guidata(hObject, handles);
-
-% --- Executes during object creation, after setting all properties.
-function Pasos_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Pasos (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function Port_Callback(hObject, eventdata, handles)
-% hObject    handle to Port (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Port as text
-%        str2double(get(hObject,'String')) returns contents of Port as a double
-Val = get(hObject,'String'); %Obtener la entrada del puerto
-handles.Port=Val;
-guidata(hObject,handles);
-
-% --- Executes during object creation, after setting all properties.
-function Port_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Port (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in Calcular.
-function Calcular_Callback(hObject, eventdata, handles)
-% hObject    handle to Calcular (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-global Step; %Importar variables globales.
-global chuleadoX;
-global chuleadoY;
-global chuleadoZ;
-global s;
-global consola;
-%if((chuleadoX == 1) && (chuleadoY == 1) && (chuleadoZ == 1))
-%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-%end
-%if((chuleadoX == 1) && (chuleadoY ==1) && (chuleadoZ == 0))
-%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-%end
-%if((chuleadoX == 0) && (chuleadoY ==1) && (chuleadoZ == 1))
-%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-%end
-%if((chuleadoX == 1) && (chuleadoY ==0) && (chuleadoZ == 1))
-%    errordlg('Se debe seleccionar solo una coordenada para modificar.','Error de Parámetros');
-%end
-if((chuleadoX == 0) && (chuleadoY ==0) && (chuleadoZ == 0))
-    errordlg('Se debe seleccionar una coordenada para modificar.','Error de Parámetros');
-end
-if(chuleadoX == 1)%Condiciones de los checkbox.
-%Se calcula el step por mm y se muestra, para luego enviarlo al CNC.
-    calculo = (200*(1/(Step))/(pi*handles.Diameter));
-    set(handles.PasosX,'String',calculo);
-    fprintf(s,strcat('$100=',num2str(calculo)));
-    lectura=fscanf(s,'%s'); %Leer el feedback
-    consola = strvcat(consola,strcat('>>>','$100=',num2str(calculo)),lectura);
-    set(handles.Resultado,'String',consola);
-end
-if(chuleadoY==1)
-    calculo = (200*(1/(Step))/(pi*handles.Diameter));
-    set(handles.PasosY,'String',calculo);
-    fprintf(s,strcat('$101=',num2str(calculo)));
-    lectura=fscanf(s,'%s'); %Leer el feedback.
-    consola = strvcat(consola,strcat('>>>','$101=',num2str(calculo)),lectura);
-    set(handles.Resultado,'String',consola);
-end
-if(chuleadoZ==1)
-    calculo=(200*(1/(Step))/(pi*handles.Diameter)); %Realizar el cálculo.
-    set(handles.PasosZ,'String',calculo); %Mostrar el resultado.
-    fprintf(s,strcat('$102=',num2str(calculo))); %Mandar código al puerto.
-    lectura=fscanf(s,'%s'); %Leer el serial en formato string.
-    consola = strvcat(consola,strcat('>>>','$102=',num2str(calculo)),lectura);
-    set(handles.Resultado,'String',consola);
-end
-
-
-
 function Resultado_Callback(hObject, eventdata, handles)
 % hObject    handle to Resultado (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -431,73 +169,6 @@ function Resultado_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in Connect.
-function Connect_Callback(hObject, eventdata, handles)
-% hObject    handle to Connect (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global s;
-puerto=handles.Port;
-s=serial(puerto,'BaudRate',115200); %Declarar puerto serial y su BAUDRATE
-fopen(s); %Abrirlo permanentemente.
-
-
-% --- Executes on button press in Disconnect.
-function Disconnect_Callback(hObject, eventdata, handles)
-% hObject    handle to Disconnect (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global s;
-fclose(s); %Cerra el puerto por seguridad
-delete(s); %Borrar serial de la memoria de la palicación
-
-% --- Executes on button press in feedbackButton.
-function feedbackButton_Callback(hObject, eventdata, handles)
-% hObject    handle to feedbackButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-%texto='';%La variable que da el feedback
-global consola;
-global s;
-limite = 5; %Tiempo en segundos durante el cual se realiza la lectura.
-contador = 0; %Contadora.
-while(contador < limite)
-    lectura=fscanf(s,'%s'); %Leer el serial en formato string.
-    consola = strvcat(consola,lectura); %Añadir a variable de consola.
-    set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
-    contador = contador +1;
-    pause(1); %El descanso.
-end
-
-
-
-function delayTime_Callback(hObject, eventdata, handles)
-% hObject    handle to delayTime (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of delayTime as text
-%        str2double(get(hObject,'String')) returns contents of delayTime as a double
-Val = get(hObject,'String'); %Save the user's selected delay time.
-handles.delayTime=Val;
-guidata(hObject,handles);
-global delayTimeValue; %Waiting time.
-delayTimeValue = handles.delayTime; %Updating the global variable.
-
-% --- Executes during object creation, after setting all properties.
-function delayTime_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to delayTime (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
 
 % --- Executes during object creation, after setting all properties.
 function currentStatus_CreateFcn(hObject, eventdata, handles)
@@ -648,6 +319,8 @@ xPos=str2num(info{1});
 yPos=str2num(info{2});
 antenna6Pos = [6 xPos yPos 0];
 antennaPosMatrix=vertcat(antennaPosMatrix,antenna6Pos);
+set(handles.antenna6Disp,'String',info{1});
+set(handles.antenna6DipsY,'String',info{2});
 
 
 % --------------------------------------------------------------------
@@ -658,6 +331,7 @@ function radiationCenter_Callback(hObject, eventdata, handles)
 global radiationCenter;
 center = inputdlg('Radiation Center','Radiation Center Z Location');
 radiationCenter = str2num(center{1});
+set(handles.radCenterDisp,'String',center{1});
 
 
 % --------------------------------------------------------------------
@@ -671,6 +345,9 @@ yaw=str2num(angles{1});
 roll=str2num(angles{2});
 pitch=str2num(angles{3});
 antennaOrientation = [yaw roll pitch];
+set(handles.orientDisp,'String',angles{1});
+set(handles.orientDisp2,'String',angles{2});
+set(handles.orientDisp3,'String',angles{3});
 
 
 % --------------------------------------------------------------------
@@ -697,8 +374,8 @@ function saveConnections_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 data = get(handles.connectionTable,'Data');
-dataF = cell2mat(data);
-uisave('dataF');
+%dataF = cell2mat(data);
+uisave('data');
 
 
 % --- Executes when entered data in editable cell(s) in connectionTable.
@@ -762,5 +439,130 @@ function date_CreateFcn(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function description_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to description (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --------------------------------------------------------------------
+function trajectSettings_Callback(hObject, eventdata, handles)
+% hObject    handle to trajectSettings (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function delayTime_Callback(hObject, eventdata, handles)
+% hObject    handle to delayTime (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global delayTimeValue;                                                     %Global variable of delay time.
+info=inputdlg('Delay Time (s)','Delay Time Between Movements');            %The user input for delay time.
+time = str2num(info{1});
+delayTimeValue = time;                                                     %Setting value so other scriots can call it.
+
+% --------------------------------------------------------------------
+function newStepSize_Callback(hObject, eventdata, handles)
+% hObject    handle to newStepSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global Step;                                                               %Global variable for Step Size.
+info=inputdlg('Availabke values (1,1/2,1/4,1/8,1/16)','Step Size');        %Informing available step size values.
+data = str2num(info{1});
+Step = data;                                                               %Setting the global variable value.
+
+
+% --------------------------------------------------------------------
+function portConnection_Callback(hObject, eventdata, handles)
+% hObject    handle to portConnection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function newPort_Callback(hObject, eventdata, handles)
+% hObject    handle to newPort (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global Port;
+info = inputdlg('Port','Serial Port');
+Port = info{1};
+
+% --------------------------------------------------------------------
+function newConnect_Callback(hObject, eventdata, handles)
+% hObject    handle to newConnect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+global consola;
+global Port;
+s=serial(Port,'BaudRate',115200); %Declarar puerto serial y su BAUDRATE
+fopen(s); %Abrirlo permanentemente.
+limite = 5; %Tiempo en segundos durante el cual se realiza la lectura.
+contador = 0; %Contadora.
+while(contador < limite)
+    lectura=fscanf(s,'%s'); %Leer el serial en formato string.
+    consola = strvcat(consola,lectura); %Añadir a variable de consola.
+    set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
+    contador = contador +1;
+    pause(1); %El descanso.
+end
+
+% --------------------------------------------------------------------
+function newDisconnect_Callback(hObject, eventdata, handles)
+% hObject    handle to newDisconnect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+fclose(s); %Cerra el puerto por seguridad
+delete(s); %Borrar serial de la memoria de la aplicación
+
+
+% --------------------------------------------------------------------
+function distanceSetting_Callback(hObject, eventdata, handles)
+% hObject    handle to distanceSetting (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global Step;
+global consola;
+info = inputdlg({'X Direction','Y Direction'},'Distance Per Movement in Axes');
+data1 = str2num(info{1});
+data2 = str2num(info{2});
+
+calculo1 = (200*(1/(Step))/(pi*data1));
+set(handles.PasosX,'String',calculo1);
+fprintf(s,strcat('$100=',num2str(calculo1)));
+lectura1=fscanf(s,'%s'); %Leer el feedback
+
+calculo2 = (200*(1/(Step))/(pi*data2));
+set(handles.PasosY,'String',calculo2);
+fprintf(s,strcat('$101=',num2str(calculo2)));
+lectura2=fscanf(s,'%s'); %Leer el feedback.
+consola = strvcat(consola,strcat('>>>','$100=',num2str(calculo1),strcat('>>>','$101=',num2str(calculo2))),lectura2);
+set(handles.Resultado,'String',consola);
+
+
+% --------------------------------------------------------------------
+function geometryParams_Callback(hObject, eventdata, handles)
+% hObject    handle to geometryParams (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+info = inputdlg({'Width','Height','Width Step','Height Step','Speed'},'Geometric Parameters');
+param1 = str2num(info{1});
+param2 = str2num(info{2});
+param3 = str2num(info{3});
+param4 = str2num(info{4});
+param5 = str2num(info{5});
+set(handles.widthDisp,'String',info{1});
+set(handles.heightDisp,'String',info{2});
+set(handles.widthStepDisp,'String',info{3});
+set(handles.heightStepDisp,'String',info{4});
+set(handles.speedDisp,'String',info{5});
+codigo = parametros(param1,param2,param3,param4,param5);
+uploadLine(codigo); %Calling the uploader script.
+
+
+% --- Executes during object creation, after setting all properties.
+function radCenterDisp_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to radCenterDisp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
