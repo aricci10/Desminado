@@ -16,6 +16,11 @@ consola = '';
 %Matrix containing the current position of the scanner.
 global posMatrix;
 posMatrix = [];
+%Value correspondieng to the radiation center Z coordinate.
+global radiationCenterValue;
+%Array containing the three angles that describe the antenna array
+%orientation.
+global arrayOrientation;
 
 %Creating the main figure that builds up the application.
 mainFigure = figure('MenuBar','none','ToolBar','none','Name','Scanner Control',...
@@ -106,20 +111,20 @@ radiationCenter = uipanel('Title','Radiation Center','BackgroundColor','Black',.
     'Position',radiationCenterPanelPos,'ForegroundColor','White');
 handles.radCenterDisp = uicontrol('Style','text','String','','parent',radiationCenter,...
     'BackgroundColor','White','ForegroundColor','Black',...
-    'HorizontalAlignment','center','Position',[35 15 50 17]);
+    'HorizontalAlignment','center','Position',[35 15 50 17],'Tag','radCenterDisp');
 
 angleArrayPos = [0.065 0.68 .08 .05];
 angleArrayPanel = uipanel('Title','Array Orientation','BackgroundColor','Black',...
     'Position',angleArrayPos,'ForegroundColor','White');
 handles.orientDisp = uicontrol('Style','text','String','','parent',angleArrayPanel,...
     'BackgroundColor','White','ForegroundColor','Black',...
-    'HorizontalAlignment','center','Position',[10 10 35 17]);
+    'HorizontalAlignment','center','Position',[10 10 35 17],'Tag','orientDisp1');
 handles.orientDisp2 = uicontrol('Style','text','String','','parent',angleArrayPanel,...
     'BackgroundColor','White','ForegroundColor','Black',...
-    'HorizontalAlignment','center','Position',[55 10 35 17]);
+    'HorizontalAlignment','center','Position',[55 10 35 17],'Tag','orientDisp2');
 handles.orientDisp3 = uicontrol('Style','text','String','','parent',angleArrayPanel,...
     'BackgroundColor','White','ForegroundColor','Black',...
-    'HorizontalAlignment','center','Position',[100 10 35 17]);
+    'HorizontalAlignment','center','Position',[100 10 35 17],'Tag','orientDisp3');
 
 %USER SETTINGS
 %Panel containing information on the user, date and description of the
@@ -135,12 +140,12 @@ userName = uicontrol(mainFigure,'Style','text','String','','parent',userNamePane
     'HorizontalAlignment','center','Position',[10 10 70 17],...
     'BackgroundColor','White','ForegroundColor','Black','Tag','userName');
 
-%sub-Panel fro displaying the measurement date.
+%Sub-Panel for displaying the measurement date.
 datePanel = uipanel('Title','Date','BackgroundColor','Black',...
     'Position',[0.1 0.58 0.05 0.05],'ForegroundColor','White');
 handles.date = uicontrol('Style','text','String','','parent',datePanel,...
     'HorizontalAlignment','center','Position',[10 10 70 17],...
-    'BackgroundColor','White','ForegroundColor','Black');
+    'BackgroundColor','White','ForegroundColor','Black','Tag','date');
 
 %Sub-Panel for displaying the measurement description.
 descriptionPos = [0.025 0.42 0.15 0.15];
@@ -148,7 +153,7 @@ descriptionPanel = uipanel('Title','Description','BackgroundColor','Black',...
     'Position', descriptionPos,'ForegroundColor','White');
 handles.description = uicontrol('Style','text','String','','BackgroundColor','White',...
     'ForegroundColor','Black','parent',descriptionPanel,...
-    'Position',[10 10 255 130]);
+    'Position',[10 10 255 130],'Tag','description');
 
 %TRAJECTORY SETTINGS
 %Panel containing a display for all the parameters that define the
@@ -163,38 +168,38 @@ widthPanel = uipanel('Title','Width','BackgroundColor','Black',...
     'ForegroundColor','White','Parent',trajectoryPanel,...
     'Position',[0.025 0.8 0.34 0.2]);
 handles.widthDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'Position',[6 6 50 15],'Parent',widthPanel);
+    'Position',[6 6 50 15],'Parent',widthPanel,'Tag','widthDisp');
 
 heightPanel = uipanel('Title','Height','BackgroundColor','Black',...
     'Position',[0.025 0.59 0.34 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
 handles.heightDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',heightPanel,'Position',[6 6 50 15]);
+    'ForegroundColor','Black','Parent',heightPanel,'Position',[6 6 50 15],'Tag','heightDisp');
 
 NxPanel = uipanel('Title','Nx','BackgroundColor','Black',...
     'Position',[0.025 0.37 0.34 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
 handles.widthStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',NxPanel,'Position',[6 6 50 15]);
+    'ForegroundColor','Black','Parent',NxPanel,'Position',[6 6 50 15],'Tag','widthStepDisp');
 
 NyPanel = uipanel('Title','Ny','BackgroundColor','Black',...
     'Position',[0.025 0.15 0.34 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
 handles.heightStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',NyPanel,'Position',[6 6 50 15]);
+    'ForegroundColor','Black','Parent',NyPanel,'Position',[6 6 50 15],'Tag','heightStepDisp');
 
 speedPanel = uipanel('Title','Speed','BackgroundColor','Black',...
     'Position',[0.5 0.8 0.34 0.2],'Parent',trajectoryPanel,...
     'ForegroundColor','White');
 handles.speedDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',speedPanel,'Position',[6 6 50 15]);
+    'ForegroundColor','Black','Parent',speedPanel,'Position',[6 6 50 15],'Tag','speedDisp');
 
 xStepPanel = uipanel('Title','X Step/mm','BackgroundColor','Black',...
     'Position',[0.45 0.59 0.5 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
 handles.xStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',xStepPanel,'Position',[13 6 50 15]);
+    'ForegroundColor','Black','Parent',xStepPanel,'Position',[13 6 50 15],'Tag','xStepDisp');
 
 yStepPanel = uipanel('Title','Y Step/mm','BackgroundColor','Black',...
     'Position',[0.45 0.35 0.5 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
 handles.yStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',yStepPanel,'Position',[13 6 50 15]);
+    'ForegroundColor','Black','Parent',yStepPanel,'Position',[13 6 50 15],'Tag','yStepDisp');
 %SETTINGS FUNCTIONS
 %Construction of all the functions that allow the SETTINGS panel to display
 %the different data used by the user in the motion of the scanner.
@@ -223,9 +228,12 @@ antenna2Center = uimenu(antennaCenters,'Label','Antenna 2',...
     'Callback',@setAntenna2Center);
 antenna3Center = uimenu(antennaCenters,'Label','Antenna 3',...
     'Callback',@setAntenna3Center);
-antenna4Center = uimenu(antennaCenters,'Label','Antenna 4');
-antenna5Center = uimenu(antennaCenters,'Label','Antenna 5');
-antenna6Center = uimenu(antennaCenters,'Label','Antenna 6');
+antenna4Center = uimenu(antennaCenters,'Label','Antenna 4',...
+    'Callback',@setAntenna4Center);
+antenna5Center = uimenu(antennaCenters,'Label','Antenna 5',...
+    'Callback',@setAntenna5Center);
+antenna6Center = uimenu(antennaCenters,'Label','Antenna 6',...
+    'Callback',@setAntenna6Center);
 guidata(mainFigure,handles);
 
 %Setting up the functions that allows the menu to get user inputs for the
@@ -279,6 +287,101 @@ guidata(mainFigure,handles);
         set(centerY,'String',info{2});
         xPos = str2num(info{1});
         yPos = str2num(info{2});
-        antennaPosMatrix = vertcat(antennaPosMatrxi);
+        antennaPosMatrix = vertcat(antennaPosMatris,[4 xPos yPos 0]);
     end
+
+    function setAntenna5Center(hObject,handles)
+        %Function in charge of displaying the antenna 5 centers for the
+        %user to see.
+        centerX = findobj('Tag','antenna5Disp');
+        centerY = findobj('Tag','antenna5DispY');
+        info = inputdlg({'X Position','Y Position'},'Antenna 5 Position');
+        set(centerX,'String',info{1});
+        set(centerY,'String',info{2});
+        xPos = str2num(info{1});
+        yPos = str2num(info{2});
+        antennaPosMatrix = vertcat(antennaPosMatrix,[5 xPos yPos 0]);
+    end
+
+    function setAntenna6Center(hObject,handles)
+        %Function in charge of displaying the antenna 6 centers for the
+        %user to see.
+        centerX = findobj('Tag','antenna6Disp');
+        centerY = findobj('Tag','antenna6DispY');
+        info = inputdlg({'X Position','Y Position'},'Antenna 6 Position');
+        set(centerX,'String',info{1});
+        set(centerY,'String',info{2});
+        xPos = str2num(info{1});
+        yPos = str2num(info{2});
+        antennaPosMatrix = vertcat(antennaPosMatrix,[6 xPos yPos 0]);
+    end
+
+%Creating the radiation center and orientation user input options in the
+%main uimenu. This process includes both the GUI elements and its callback
+%functions.
+radCenter = uimenu(antennaSettingsMenu,'Label','Radiation Center',...
+    'Callback',@dispRadCenter);
+angleoOrient = uimenu(antennaSettingsMenu,'Label','Array Orientation',...
+    'Callback',@dispArrayOrient);
+
+    function dispRadCenter(hObject,handles)
+        %Function in charge of displaying the radiation center given by the
+        %user in the main GUI:
+        info = inputdlg({'Z Position'},'Radiation Center');
+        radCenterDisplay = findobj('Tag','radCenterDisp');
+        set(radCenterDisplay,'String',info{1});
+        center = str2num(info{1});
+        radiationCenterValue = center;
+    end
+
+    function dispArrayOrient(hObject,handles)
+        %Function in charge of displaying the user input corresponding to
+        %the antenna array angular orientation.
+        info = inputdlg({'Yaw','Roll','Pitch'},'Array Orientation');
+        angle1 = findobj('Tag','orientDisp1');
+        angle2 = findobj('Tag','orientDisp2');
+        angle3 = findobj('Tag','orientDisp3');
+        set(angle1,'String',info{1});
+        set(angle2,'String',info{2});
+        set(angle3,'String',info{3});
+        yawAngle = str2num(info{1});
+        rollAngle = str2num(info{2});
+        pitchAngle = str2num(info{3});
+        arrayOrientation = [yawAngle rollAngle pitchAngle];
+    end
+
+%TRAJECTORY SETTINGS
+%Everything related to the user's definition of the parameters for the
+%predetermined movement trajectory.
+trajectSettings = uimenu(mainFigure,'Label','Trajectory Settings');
+geometrySettingsMenu = uimenu(trajectSettings,'Label','Geometric Parameters',...
+    'Callback',@geometrySettings);
+
+    function geometrySettings(hObject,handles)
+        info = inputdlg({'Width','Height','Width Step','Height Step','Speed'},'Geometric Parameters');
+        param1 = str2num(info{1});
+        param2 = str2num(info{2});
+        param3 = str2num(info{3});
+        param4 = str2num(info{4});
+        param5 = str2num(info{5});
+        theWidth = findobj('Tag','widthDisp');
+        theHeight = findobj('Tag','heightDisp');
+        theWidthStep = findobj('Tag','widthStepDisp');
+        theHeightStep = findobj('Tag','heightStepDisp');
+        theSpeed = findobj('Tag','speedDisp');
+        set(theWidth,'String',info{1});
+        set(theHeight,'String',info{2});
+        set(theWidthStep,'String',info{3});
+        set(theHeightStep,'String',info{4});
+        set(theSpeed,'String',info{5});
+        %codigo = parametros(param1,param2,param3,param4,param5);
+        %uploadLine(codigo);
+    end
+
+    function stepSettings(hObject,handles)
+        %Function in charge of setting the movement parameters for the
+        %desired trajectory.
+        info = inputdlg({'X Step/mm','Y Step/mm'},'Step Parameter');
+    end
+
 end
