@@ -21,6 +21,8 @@ global radiationCenterValue;
 %Array containing the three angles that describe the antenna array
 %orientation.
 global arrayOrientation;
+%The port being used for serial connection.
+global s;
 
 %Creating the main figure that builds up the application.
 mainFigure = figure('MenuBar','none','ToolBar','none','Name','Scanner Control',...
@@ -31,17 +33,17 @@ mainFigure = figure('MenuBar','none','ToolBar','none','Name','Scanner Control',.
 
 %SETTINGS PANEL
 %-------------------------------------------------------------------------
-settingPosition = [0.01 0.16 .2 0.8];
-settingsPanel = uipanel('Title','Settings','BackgroundColor','Black',...
+settingPosition = [0.01 0.362 .2 0.6];
+settingsPanel = uipanel('Title','General Settings','BackgroundColor','Black',...
     'Position',settingPosition,'HighlightColor','White',...
-    'ForegroundColor','White');
+    'ForegroundColor','White','Parent',mainFigure);
 
 %ANTENNA CENTERS
 %-------------------------------------------------------------------------
 %Antenna1 Center Position display.
-antenna1PanelPos = [0.02 0.88 0.05 0.05];
+antenna1PanelPos = [0.03 0.9 0.25 0.08];
 antenna1 = uipanel('Title','Antenna 1','BackgroundColor','Black',...
-    'Position',antenna1PanelPos,'ForegroundColor','White');
+    'Position',antenna1PanelPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.antenna1Disp = uicontrol('Style','text','String','','parent',antenna1,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[5 10 35 17],'Tag','antenna1Disp');
@@ -50,9 +52,9 @@ handles.antenna1DispY = uicontrol('Style','text','String','','parent',antenna1,.
     'HorizontalAlignment','center','Position',[50 10 35 17],'Tag','antenna1DispY');
 
 %Antenna 2 Center Position display.
-antenna2PanelPos = [0.08 0.88 0.05 0.05];
+antenna2PanelPos = [0.35 0.9 0.25 0.08];
 antenna2 = uipanel('Title','Antenna 2','BackgroundColor','Black',...
-    'Position',antenna2PanelPos,'ForegroundColor','White');
+    'Position',antenna2PanelPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.antenna2Disp = uicontrol('Style','text','String','','parent',antenna2,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[5 10 35 17],'Tag','antenna2Disp');
@@ -61,9 +63,9 @@ handles.antenna2DispY = uicontrol('Style','text','String','','parent',antenna2,.
     'HorizontalAlignment','center','Position',[50 10 35 17],'Tag','antenna2DispY');
 
 %Antenna 3 center position display.
-antenna3PanelPos = [0.14 0.88 0.05 0.05];
+antenna3PanelPos = [0.67 0.9 0.25 0.08];
 antenna3 = uipanel('Title','Antenna 3','BackgroundColor','Black',...
-    'Position',antenna3PanelPos,'ForegroundColor','White');
+    'Position',antenna3PanelPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.antenna3Disp = uicontrol('Style','text','String','','parent',antenna3,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[5 10 35 17],'Tag','antenna3Disp');
@@ -72,9 +74,9 @@ handles.antenna3DispY = uicontrol('Style','text','String','','parent',antenna3,.
     'HorizontalAlignment','center','Position',[50 10 35 17],'Tag','antenna3DispY');
 
 %Antenna 4 center position display.
-antenna4PanelPos = [0.02 0.82 0.05 0.05];
+antenna4PanelPos = [0.03 0.8 0.25 0.08];
 antenna4 = uipanel('Title','Antenna 4','BackgroundColor','Black',...
-    'Position',antenna4PanelPos,'ForegroundColor','White');
+    'Position',antenna4PanelPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.antenna4Disp = uicontrol('Style','text','String','','parent',antenna4,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[5 10 35 17],'Tag','antenna4Disp');
@@ -83,9 +85,9 @@ handles.antenna4DispY = uicontrol('Style','text','String','','parent',antenna4,.
     'HorizontalAlignment','center','Position',[50 10 35 17],'Tag','antenna4DispY');
 
 %Antenna 5 center position display.
-antenna5PanelPos = [0.08 0.82 0.05 0.05];
+antenna5PanelPos = [0.35 0.8 0.25 0.08];
 antenna5 = uipanel('Title','Antenna 5','BackgroundColor','Black',...
-    'Position',antenna5PanelPos,'ForegroundColor','White');
+    'Position',antenna5PanelPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.antenna5Disp = uicontrol('Style','text','String','','parent',antenna5,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[5 10 35 17],'Tag','antenna5Disp');
@@ -94,9 +96,9 @@ handles.antenna5DispY = uicontrol('Style','text','String','','parent',antenna5,.
     'HorizontalAlignment','center','Position',[50 10 35 17],'Tag','antenna5DispY');
 
 %Antenna 6 center position display.
-antenna6PanelPos = [0.14 0.82 0.05 0.05];
+antenna6PanelPos = [0.67 0.8 0.25 0.08];
 antenna6 = uipanel('Title','Antenna 6','BackgroundColor','Black',...
-    'Position',antenna6PanelPos,'ForegroundColor','White');
+    'Position',antenna6PanelPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.antenna6Disp = uicontrol('Style','text','String','','parent',antenna6,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[5 10 35 17],'Tag','antenna6Disp');
@@ -106,16 +108,16 @@ handles.antenna6DispY = uicontrol('Style','text','String','','parent',antenna6,.
 
 %RADIATION CENTER AND ANGLES OF ARRAY
 %-------------------------------------------------------------------------
-radiationCenterPanelPos = [0.07 0.75 .07 .053];
+radiationCenterPanelPos = [0.3 0.67 0.35 0.09];
 radiationCenter = uipanel('Title','Radiation Center','BackgroundColor','Black',...
-    'Position',radiationCenterPanelPos,'ForegroundColor','White');
+    'Position',radiationCenterPanelPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.radCenterDisp = uicontrol('Style','text','String','','parent',radiationCenter,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[35 15 50 17],'Tag','radCenterDisp');
 
-angleArrayPos = [0.065 0.68 .08 .05];
+angleArrayPos = [0.27 0.55 .4 .1];
 angleArrayPanel = uipanel('Title','Array Orientation','BackgroundColor','Black',...
-    'Position',angleArrayPos,'ForegroundColor','White');
+    'Position',angleArrayPos,'ForegroundColor','White','Parent',settingsPanel);
 handles.orientDisp = uicontrol('Style','text','String','','parent',angleArrayPanel,...
     'BackgroundColor','White','ForegroundColor','Black',...
     'HorizontalAlignment','center','Position',[10 10 35 17],'Tag','orientDisp1');
@@ -129,77 +131,95 @@ handles.orientDisp3 = uicontrol('Style','text','String','','parent',angleArrayPa
 %USER SETTINGS
 %Panel containing information on the user, date and description of the
 %measurement being done.
-userInfoPanelPos = [0.02 0.4 0.17 0.25];
+userInfoPanelPos = [0.02 0.06 0.96 0.4];
 userInfoPanel = uipanel('Title','User Information','BackgroundColor','Black',...
-    'Position',userInfoPanelPos,'ForegroundColor','White');
+    'Position',userInfoPanelPos,'ForegroundColor','White','Parent',settingsPanel);
 
 %Sub-Panel for displaying the user name.
 userNamePanel = uipanel('Title','User Name','BackgroundColor','Black',...
-    'Position',[0.025 0.58 0.05 0.05],'ForegroundColor','White');
-userName = uicontrol(mainFigure,'Style','text','String','','parent',userNamePanel,...
-    'HorizontalAlignment','center','Position',[10 10 70 17],...
+    'Position',[0.05 0.75 0.3 0.2],'ForegroundColor','White',...
+    'Parent',userInfoPanel);
+handles.userName = uicontrol(mainFigure,'Style','text','String','','parent',userNamePanel,...
+    'HorizontalAlignment','center','Position',[12 8 70 17],...
     'BackgroundColor','White','ForegroundColor','Black','Tag','userName');
 
 %Sub-Panel for displaying the measurement date.
 datePanel = uipanel('Title','Date','BackgroundColor','Black',...
-    'Position',[0.1 0.58 0.05 0.05],'ForegroundColor','White');
+    'Position',[0.6 0.75 0.3 0.2],'ForegroundColor','White',...
+    'Parent',userInfoPanel);
 handles.date = uicontrol('Style','text','String','','parent',datePanel,...
-    'HorizontalAlignment','center','Position',[10 10 70 17],...
+    'HorizontalAlignment','center','Position',[12 8 70 17],...
     'BackgroundColor','White','ForegroundColor','Black','Tag','date');
 
 %Sub-Panel for displaying the measurement description.
-descriptionPos = [0.025 0.42 0.15 0.15];
+descriptionPos = [0.05 0.1 0.85 0.6];
 descriptionPanel = uipanel('Title','Description','BackgroundColor','Black',...
-    'Position', descriptionPos,'ForegroundColor','White');
+    'Position', descriptionPos,'ForegroundColor','White','Parent',userInfoPanel);
 handles.description = uicontrol('Style','text','String','','BackgroundColor','White',...
     'ForegroundColor','Black','parent',descriptionPanel,...
-    'Position',[10 10 255 130],'Tag','description');
+    'Position',[20 10 255 130],'Tag','description');
 
 %TRAJECTORY SETTINGS
 %Panel containing a display for all the parameters that define the
 %currently used trajectory.
-trajectoryPanelPos = [0.05 0.19 0.1 0.2];
-trajectoryPanel = uipanel('Title','Trajectory Settings',...
-    'BackgroundColor','Black','ForegroundColor','White',...
-    'Position',trajectoryPanelPos);
+%TAB PANEL
+%Construction of the tab panel group to display several settings given by
+%the user.
+tabPanel = uitabgroup('Parent',mainFigure,'Position',[0.25 0.455 0.5 0.5]);
+portPanel = uitab('Parent',tabPanel,'Title','Port Connection',...
+    'ForegroundColor','Black','BackgroundColor','Black');
+%--------------------------------------------------------------------------
+%Everything in the PORT tab.
+portNamePanel = uipanel('Parent',portPanel,'BackgroundColor','Black',...
+    'ForegroundColor','White','Title','Port Name','Position',[0.02 0.85 0.1 0.1]);
+handles.portNameDisp = uicontrol('Style','text','Parent',portNamePanel,'String','',...
+    'Position',[10 10 70 17],'HorizontalAlignment','Center');
+%--------------------------------------------------------------------------
+trajectoryTab = uitab('Parent',tabPanel,'Title','Trajectory Settings',...
+    'ForegroundColor','Black','BackgroundColor','Black');
 
 %Sub-panels containing the display for all the trajectory parameters.
 widthPanel = uipanel('Title','Width','BackgroundColor','Black',...
-    'ForegroundColor','White','Parent',trajectoryPanel,...
-    'Position',[0.025 0.8 0.34 0.2]);
+    'ForegroundColor','White','Parent',trajectoryTab,...
+    'Position',[0.025 0.87 0.08 0.1]);
 handles.widthDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'Position',[6 6 50 15],'Parent',widthPanel,'Tag','widthDisp');
+    'Position',[6 8 50 15],'Parent',widthPanel,'Tag','widthDisp');
 
 heightPanel = uipanel('Title','Height','BackgroundColor','Black',...
-    'Position',[0.025 0.59 0.34 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
+    'Position',[0.025 0.75 0.08 0.1],'Parent',trajectoryTab,'ForegroundColor','White');
 handles.heightDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',heightPanel,'Position',[6 6 50 15],'Tag','heightDisp');
+    'ForegroundColor','Black','Parent',heightPanel,'Position',[6 8 50 15],'Tag','heightDisp');
 
 NxPanel = uipanel('Title','Nx','BackgroundColor','Black',...
-    'Position',[0.025 0.37 0.34 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
+    'Position',[0.025 0.63 0.08 0.1],'Parent',trajectoryTab,'ForegroundColor','White');
 handles.widthStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',NxPanel,'Position',[6 6 50 15],'Tag','widthStepDisp');
+    'ForegroundColor','Black','Parent',NxPanel,'Position',[6 8 50 15],'Tag','widthStepDisp');
 
 NyPanel = uipanel('Title','Ny','BackgroundColor','Black',...
-    'Position',[0.025 0.15 0.34 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
+    'Position',[0.025 0.51 0.08 0.1],'Parent',trajectoryTab,'ForegroundColor','White');
 handles.heightStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',NyPanel,'Position',[6 6 50 15],'Tag','heightStepDisp');
+    'ForegroundColor','Black','Parent',NyPanel,'Position',[6 8 50 15],'Tag','heightStepDisp');
 
 speedPanel = uipanel('Title','Speed','BackgroundColor','Black',...
-    'Position',[0.5 0.8 0.34 0.2],'Parent',trajectoryPanel,...
+    'Position',[0.025 0.39 0.08 0.1],'Parent',trajectoryTab,...
     'ForegroundColor','White');
 handles.speedDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',speedPanel,'Position',[6 6 50 15],'Tag','speedDisp');
+    'ForegroundColor','Black','Parent',speedPanel,'Position',[6 8 50 15],'Tag','speedDisp');
 
 xStepPanel = uipanel('Title','X Step/mm','BackgroundColor','Black',...
-    'Position',[0.45 0.59 0.5 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
+    'Position',[0.025 0.27 0.1 0.1],'Parent',trajectoryTab,'ForegroundColor','White');
 handles.xStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',xStepPanel,'Position',[13 6 50 15],'Tag','xStepDisp');
+    'ForegroundColor','Black','Parent',xStepPanel,'Position',[13 8 50 15],'Tag','xStepDisp');
 
 yStepPanel = uipanel('Title','Y Step/mm','BackgroundColor','Black',...
-    'Position',[0.45 0.35 0.5 0.2],'Parent',trajectoryPanel,'ForegroundColor','White');
+    'Position',[0.025 0.15 0.1 0.1],'Parent',trajectoryTab,'ForegroundColor','White');
 handles.yStepDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',yStepPanel,'Position',[13 6 50 15],'Tag','yStepDisp');
+    'ForegroundColor','Black','Parent',yStepPanel,'Position',[13 8 50 15],'Tag','yStepDisp');
+
+delayPanel = uipanel('Title','Delay Time','BackgroundColor','Black',...
+    'Position',[0.025 0.02 0.1 0.1],'Parent',trajectoryTab,'ForegroundColor','White');
+handles.delayDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
+    'ForegroundColor','Black','Parent',delayPanel,'Position',[13 8 50 15],'Tag','yStepDisp');
 %SETTINGS FUNCTIONS
 %Construction of all the functions that allow the SETTINGS panel to display
 %the different data used by the user in the motion of the scanner.
@@ -384,4 +404,31 @@ geometrySettingsMenu = uimenu(trajectSettings,'Label','Geometric Parameters',...
         info = inputdlg({'X Step/mm','Y Step/mm'},'Step Parameter');
     end
 
+%Serial Connection
+%Everything related to the serial connection from the GUI to the CNC
+%controlling the movement of the scanner.
+serialSettings = uimenu(mainFigure,'Label','Serial Connection');
+thePort = uimenu(serialSettings,'Label','Connect to Port');
+disconnectFrom = uimenu(serialSettings,'Label','Disconnect from Port');
+
+    function connectPort()
+        info = inputdlg('Port Name','Serial Port');
+        Port = info{1};
+        s=serial(Port,'BaudRate',115200);
+        fopen(s);
+        limite = 5; 
+        contador = 0; 
+        %while(contador < limite)
+        %    lectura=fscanf(s,'%s'); %Leer el serial en formato string.
+        %    consola = strvcat(consola,lectura); %Añadir a variable de consola.
+        %    set(handles.Resultado,'String',consola); %Mostrar en consola de interfaz.
+        %    contador = contador +1;
+        %    pause(1); %El descanso.
+        %end
+    end
+
+    function disconnectPort()
+        fclose(s);
+        delete(s);
+    end
 end
