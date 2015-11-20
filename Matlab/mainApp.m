@@ -162,6 +162,7 @@ handles.description = uicontrol('Style','text','String','','BackgroundColor','Wh
 %TRAJECTORY SETTINGS
 %Panel containing a display for all the parameters that define the
 %currently used trajectory.
+
 %TAB PANEL
 %Construction of the tab panel group to display several settings given by
 %the user.
@@ -408,8 +409,10 @@ geometrySettingsMenu = uimenu(trajectSettings,'Label','Geometric Parameters',...
 %Everything related to the serial connection from the GUI to the CNC
 %controlling the movement of the scanner.
 serialSettings = uimenu(mainFigure,'Label','Serial Connection');
-thePort = uimenu(serialSettings,'Label','Connect to Port');
-disconnectFrom = uimenu(serialSettings,'Label','Disconnect from Port');
+thePort = uimenu(serialSettings,'Label','Connect to Port',...
+    'Callback',@connectPort);
+disconnectFrom = uimenu(serialSettings,'Label','Disconnect from Port',...
+    'Callback',@disconnectPort);
 
     function connectPort()
         info = inputdlg('Port Name','Serial Port');
@@ -431,4 +434,74 @@ disconnectFrom = uimenu(serialSettings,'Label','Disconnect from Port');
         fclose(s);
         delete(s);
     end
+
+%Current Position TAB
+%Everything related to the current status of the CNC during the scannerś
+%movement.
+statusTab = uitab('Title','CurrentStatus','Parent',tabPanel,...
+    'BackgroundColor','Black');
+xPanel = uipanel('Title','X Position','BackgroundColor','Black',...
+    'Parent',statusTab,'Position',[0.01 0.87 0.1 0.1],...
+    'ForegroundColor','White');
+handles.xPosition = uicontrol('Style','text','String','','Tag','xPos',...
+    'Parent',xPanel,'HorizontalAlignment','center','Position',[20 10 50 15]);
+yPanel = uipanel('Title','Y Position','BackgroundColor','Black',...
+    'Parent',statusTab,'Position',[0.2 0.87 0.1 0.1],...
+    'ForegroundColor','White');
+handles.yPosition = uicontrol('Style','text','String','','Tag','yPos',...
+    'Parent',yPanel,'HorizontalAlignment','center','Position',[20 10 50 15]);
+statusPanel = uipanel('Title','Status','Parent',statusTab,...
+    'BackgroundColor','Black','Position',[0.4 0.87 0.1 0.1],...
+    'ForegroundColor','White');
+handles.status = uicontrol('Style','text','String','','Tag','currentStatus',...
+    'Parent',statusPanel,'HorizontalAlignment','center','Position',[20 10 50 15]);
+%CONSOLE PANEL
+%-----------------------------------------------------------------------
+consolePosition = [0.25 0.13 0.3 0.3];
+consolePanel = uipanel('Title','Console','BackgroundColor','Black',...
+    'ForegroundColor','White','Parent',mainFigure,...
+    'Position',consolePosition);
+handles.consoleLine = uicontrol('Style','edit','String','','Tag','commandLine',...
+    'Parent',consolePanel,'Position',[10 250 200 25]);
+handles.sendButton = uicontrol('Style','pushbutton','String','Send',...
+    'Tag','sendButton','Parent',consolePanel,'Position',[400 250 100 25],...
+    'BackgroundColor','Green','Callback',@send);
+handles.feedback = uicontrol('Style','text','String','','Parent',consolePanel,...
+    'Position',[10 10 500 220],'Tag','feedback');
+%FUNCTIONS OF THE CONSOLE PANEL
+    function send(hObject,handles)
+        command = findobj('Tag','commandLine');
+        response = findobj('Tag','feedback');
+        xPosition = findobj('Tag','xPos');
+        yPosition = findobj('Tag','yPos');
+        line = get(command,'String');
+        fprintf(s,line);
+        fscanf(s,'%s',s.BytesAvailable);
+        consola = strvcat(consola,line);
+        set(response,'String',consola);
+        ready = false;
+        %TO-DO: Correct handles for proper feedback.
+        while(ready == false)
+            statusData = askStatus(); %Get current status info.
+            xPos = statusData(2);
+            yPos = statusData(3);
+            free = statusData(1);
+            set(xPosition,'String',xPos); %Display current X position.
+            set(yPosition,'String',yPos); %Display current Y position.
+            set(handles.currentStatus,'String',free); %Display movement status.
+            comp = strcmp(free,'Idle'); %Check if it is free already.
+            get(handles.currentStatus,'BackgroundColor'); %Import the capacity of editing color.
+            if(comp == false)
+                set(handles.currentStatus,'BackgroundColor','red'); %Red background.
+            end
+            if(comp == true)
+                ready = true;
+                set(handles.currentStatus,'BackgroundColor','green'); %Green background.
+                consola = strvcat(consola,'Movement finished!');
+                set(handles.Resultado,'String',consola);
+            end
+            pause(0.25); %Waiting for the next iteration.
+        end
+    end
+
 end
