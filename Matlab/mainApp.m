@@ -220,7 +220,7 @@ handles.yStepDisp = uicontrol('Style','text','String','','BackgroundColor','Whit
 delayPanel = uipanel('Title','Delay Time','BackgroundColor','Black',...
     'Position',[0.025 0.02 0.1 0.1],'Parent',trajectoryTab,'ForegroundColor','White');
 handles.delayDisp = uicontrol('Style','text','String','','BackgroundColor','White',...
-    'ForegroundColor','Black','Parent',delayPanel,'Position',[13 8 50 15],'Tag','yStepDisp');
+    'ForegroundColor','Black','Parent',delayPanel,'Position',[13 8 50 15],'Tag','delayTime');
 %SETTINGS FUNCTIONS
 %Construction of all the functions that allow the SETTINGS panel to display
 %the different data used by the user in the motion of the scanner.
@@ -379,22 +379,25 @@ geometrySettingsMenu = uimenu(trajectSettings,'Label','Geometric Parameters',...
     'Callback',@geometrySettings);
 
     function geometrySettings(hObject,handles)
-        info = inputdlg({'Width','Height','Width Step','Height Step','Speed'},'Geometric Parameters');
+        info = inputdlg({'Width','Height','Width Step','Height Step','Speed','Delay Time'},'Geometric Parameters');
         param1 = str2num(info{1});
         param2 = str2num(info{2});
         param3 = str2num(info{3});
         param4 = str2num(info{4});
         param5 = str2num(info{5});
+        delayTime = str2num(info{6});
         theWidth = findobj('Tag','widthDisp');
         theHeight = findobj('Tag','heightDisp');
         theWidthStep = findobj('Tag','widthStepDisp');
         theHeightStep = findobj('Tag','heightStepDisp');
         theSpeed = findobj('Tag','speedDisp');
+        theDelay = findobj('Tag','delayTime');
         set(theWidth,'String',info{1});
         set(theHeight,'String',info{2});
         set(theWidthStep,'String',info{3});
         set(theHeightStep,'String',info{4});
         set(theSpeed,'String',info{5});
+        set(theDelay,'String',info{6});
         %codigo = parametros(param1,param2,param3,param4,param5);
         %uploadLine(codigo);
     end
@@ -474,6 +477,7 @@ handles.feedback = uicontrol('Style','text','String','','Parent',consolePanel,..
         response = findobj('Tag','feedback');
         xPosition = findobj('Tag','xPos');
         yPosition = findobj('Tag','yPos');
+        status = findobj('Tag','currentStatus');
         line = get(command,'String');
         fprintf(s,line);
         fscanf(s,'%s',s.BytesAvailable);
@@ -488,7 +492,7 @@ handles.feedback = uicontrol('Style','text','String','','Parent',consolePanel,..
             free = statusData(1);
             set(xPosition,'String',xPos); %Display current X position.
             set(yPosition,'String',yPos); %Display current Y position.
-            set(handles.currentStatus,'String',free); %Display movement status.
+            set(status,'String',free); %Display movement status.
             comp = strcmp(free,'Idle'); %Check if it is free already.
             get(handles.currentStatus,'BackgroundColor'); %Import the capacity of editing color.
             if(comp == false)
@@ -496,9 +500,9 @@ handles.feedback = uicontrol('Style','text','String','','Parent',consolePanel,..
             end
             if(comp == true)
                 ready = true;
-                set(handles.currentStatus,'BackgroundColor','green'); %Green background.
+                set(status,'BackgroundColor','green'); %Green background.
                 consola = strvcat(consola,'Movement finished!');
-                set(handles.Resultado,'String',consola);
+                set(response,'String',consola);
             end
             pause(0.25); %Waiting for the next iteration.
         end
