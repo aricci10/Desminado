@@ -1,9 +1,9 @@
 function updateConsole()
 %Function in charge of keeping the console variable size under control by
 %erasing the initial content after a certain size limit has been reached.
-global console;
-actualSize = length(console);
+global prueba;
+actualSize = length(prueba);
 if(actualSize > 10)
-    console = console(actualSize - 0.5*actualSize:actualSize);
+    prueba = prueba(actualSize - 10:actualSize);
 end
 end
