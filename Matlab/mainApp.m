@@ -362,8 +362,10 @@ guidata(mainFigure,handles);
 %functions.
 radCenter = uimenu(antennaSettingsMenu,'Label','Radiation Center',...
     'Callback',@dispRadCenter);
-angleoOrient = uimenu(antennaSettingsMenu,'Label','Array Orientation',...
+angleOrient = uimenu(antennaSettingsMenu,'Label','Array Orientation',...
     'Callback',@dispArrayOrient);
+saveSettings = uimenu(antennaSettingsMenu,'Label','Save Settings',...
+    'Callback',@saveAntennaSettings);
 
     function dispRadCenter(hObject,handles)
         %Function in charge of displaying the radiation center given by the
@@ -390,6 +392,7 @@ angleoOrient = uimenu(antennaSettingsMenu,'Label','Array Orientation',...
         pitchAngle = str2num(info{3});
         arrayOrientation = [yawAngle rollAngle pitchAngle];
     end
+
 
 %TRAJECTORY SETTINGS
 %Everything related to the user's definition of the parameters for the
@@ -457,7 +460,8 @@ disconnectFrom = uimenu(serialSettings,'Label','Disconnect from Port',...
         fclose(s);
         delete(s);
     end
-
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 %Current Position TAB
 %Everything related to the current status of the CNC during the scannerś
 %movement.
