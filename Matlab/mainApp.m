@@ -170,6 +170,20 @@ tabPanel = uitabgroup('Parent',mainFigure,'Position',[0.25 0.455 0.5 0.5]);
 portPanel = uitab('Parent',tabPanel,'Title','Port Connection',...
     'ForegroundColor','Black','BackgroundColor','Black');
 %--------------------------------------------------------------------------
+%Everything in the Antenna Table TAB.
+tableTab = uitab('Parent',tabPanel,'Title','Array Configuration',...
+    'ForegroundColor','Black','BackgroundColor','Black');
+theArrays = createTable();
+initialData = theArrays;
+trueValues = [true true true true true true true true true true true true];
+theWidths = {30 30 30 30 30 30 30 30 30 30 30 30};
+theFormats = {'logical' 'logical' 'logical' 'logical' 'logical' 'logical' 'logical' 'logical' 'logical' 'logical' 'logical' 'logical'};
+arrayTable = uitable('Parent',tableTab,'Tag','arrayTable',...
+    'Data',initialData,'ColumnEditable',trueValues,'Position',[50 50 0.1 0.1],...
+    'ColumnWidth',theWidths,'ColumnFormat',theFormats);
+arrayTable.Position(3) = arrayTable.Extent(3);
+arrayTable.Position(4) = arrayTable.Extent(4);
+%--------------------------------------------------------------------------
 %Everything in the PORT tab.
 portNamePanel = uipanel('Parent',portPanel,'BackgroundColor','Black',...
     'ForegroundColor','White','Title','Port Name','Position',[0.02 0.85 0.1 0.1]);
@@ -512,6 +526,15 @@ handles.feedback = uicontrol('Style','text','String','','Parent',consolePanel,..
             end
             pause(0.25); %Waiting for the next iteration.
         end
+    updateConsole();
     end
+
+%BEGIN-MEASUREMENTS Pannel
+%The pannel in charge of containing the begin-measurement button
+beginPannel = uipanel('Title','Initialize','BackgroundColor','Black',...
+    'ForegroundColor','White','Parent',mainFigure,...
+    'Position',[0.56 0.36 0.18 0.08]);
+handles.beginMeasure = uicontrol('Style','pushbutton','Tag','beginButton',...
+    'String','Begin Measurement','Parent',beginPannel,'Position',[50 25 200 40]);
 
 end
